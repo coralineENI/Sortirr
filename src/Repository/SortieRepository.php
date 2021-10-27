@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Lieu;
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,6 +20,31 @@ class SortieRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Sortie::class);
     }
+
+    /**
+     * @return Sortie[]
+     */
+    public function findAllFilter(
+        Participant $user,
+        Lieu $formLieu = null,
+        bool $organisateur = false)
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        if ($formLieu != null){
+            $qb ->andWhere('s.lieu = :lieu')
+                ->setParameter('lieu', $formLieu->getId());
+        }
+
+        if ($organisateur){
+            $qb ->andWhere('s.organisateur = :organisateur')
+                ->setParameter('organisateur', $user->getId());
+        }
+
+        $qb = $qb->getQuery();
+        return $qb->execute();
+    }
+
 
     // /**
     //  * @return Sortie[] Returns an array of Sortie objects

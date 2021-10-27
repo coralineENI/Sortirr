@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sortir{% endblock %}</title>
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/bootswatch.com.min.css') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ path('home') }}">Sortir.com</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav ">
+
+                {#                {% if not app.user %}#}
+                <li class="nav-item">
+                     <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                </li>
+
+                {#                {% else %}#}
+
+                {#                       {% for role in app.user.roles %}#}
+                {#                        {% if role=="ROLE_USER" %}#}
+                <li class="nav-item">
+                    <a class="nav-link" href="">Sorties</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="">Mon profil</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('app_logout') }}">Deconnexion </a>
+                </li>
+
+                {#                        {% elseif role=="ROLE_EDITOR" %}#}
+                <li class="nav-item">
+                   {#  <a class="nav-link" href="{{ path('creer_sortie') }}">Créer une sortie</a> #}
+                </li>
+
+
+                {#                        {% elseif role=="ROLE_ADMIN" %}#}
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_register') }}">Inscription</a>
+                </li>
+                <li class="nav-item">
+                {#     <a class="nav-link" href="{{ path('admin_utilisateurs') }}">Participants</a> #}
+                </li>
+
+
+
+
+                {#                        {% else %}#}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_logout') }}">Deconnexion </a>
+                </li>
+                {#                        {% endif %}#}
+                {#                    {% endfor %}#}
+                {#                {% endif %}#}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    {% block body %}{% endblock %}
+</div>
+</body>
+</html>

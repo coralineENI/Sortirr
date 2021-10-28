@@ -22,11 +22,12 @@ class FiltresType extends AbstractType
             ->add('site', EntityType::class, [
                 'class' => Site::class,
                 'label'    => 'Site : ',
+                'required'=>false,
                 "choice_label" => "nom",
                 'placeholder'=>"Saisir un site"
 
             ])
-            ->add('nomSortie', TextType::class,[
+            ->add('nom', TextType::class,[
                 'label' => 'Le nom de la sortie contient : ',
                 'required'=>false,
                 'attr'=>[
@@ -35,7 +36,9 @@ class FiltresType extends AbstractType
             ])
             ->add('debut', DateType::class,  [
                 'label'    => 'Entre ',
+                'required'=>false,
                 'format' => 'dd-MM-yyyy',
+                'mapped'  => false,
                 'attr' => [
                     'class' => 'form-control datetimepicker-input',
                     'data-toggle'=>'datetimepicker',
@@ -44,7 +47,9 @@ class FiltresType extends AbstractType
                 ])
             ->add('fin', DateType::class,  [
                 'label'    => 'et ',
+                'required'=>false,
                 'format' => 'dd-MM-yyyy',
+                'mapped'  => false,
                 'attr' => [
                     'class' => 'form-control datetimepicker-input',
                     'data-toggle'=>'datetimepicker',
@@ -52,12 +57,19 @@ class FiltresType extends AbstractType
 
                 ]])
             ->add('organisateur',CheckboxType::class,  [
+                'required'=>false,
                 'label'    => 'Sorties dont je suis l\'organisateur/trice ',])
             ->add('inscrit',CheckboxType::class,  [
+                'required'=>false,
+                'mapped'  => false,
                 'label'    => 'Sorties auxquelles je suis inscrit/e ',])
             ->add('pasInscrit',CheckboxType::class,  [
+                'required'=>false,
+                'mapped'  => false,
         'label'    => 'Sorties auxquelles je ne suis pas inscrit/e ',])
             ->add('sortiePassee',CheckboxType::class,  [
+                'required'=>false,
+                'mapped'  => false,
         'label'    => 'Sorties passées',])
 
         ->add('submit', SubmitType::class, [

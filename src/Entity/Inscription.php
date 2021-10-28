@@ -32,6 +32,11 @@ class Inscription
      */
     private $participant;
 
+    public function __construct(){
+        $this->dateInscription = (new \DateTime());
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;

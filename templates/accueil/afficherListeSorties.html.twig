@@ -7,7 +7,7 @@
     <br>
     {% if app.user %}
     <p>Date du jour : {{ now|date("d/m/Y") }}</p>
-    <p>Participant : {{ app.user.userIdentifier }}</p>
+    <p>Participant : {{ app.user.userIdentifier|default('undefined') }}</p>
 
     {% endif %}
 <br>
@@ -22,7 +22,7 @@
                 {{ form_row(form.site) }}
             </p>
             <p class="form-group col-lg-auto">
-                {{ form_row(form.nomSortie) }}
+                {{ form_row(form.nom) }}
             </p>
             <p class="form-group col-lg-auto">
                <label for="{{ field_name(form.debut) }}">Entre : </label>
@@ -90,10 +90,23 @@
         </thead>
         <tbody>
 
-
         {% for sortie in sorties %}
-
         {% set participantInscrit = false %}
+        {% set etat='ouvert' %}
+        {% if sortie.dateHeureDebut|date("Y/m/d H:i") == now|date("Y/m/d H:i") %}
+             {% set etat='en cours' %}
+        {% elseif sortie.dateHeureDebut|date("Y/m/d H:i") < now|date("Y/m/d H:i") and (sortie.dateHeureDebut |date_modify("+"~sortie.duree~" minutes") | date("Y/m/d H:i") > now|date("Y/m/d H:i")) %}
+            {% set etat='en cours' %}
+       {% elseif sortie.dateLimiteInscription|date("Y/m/d") == now|date("Y/m/d") %}
+            {% set etat='fermé' %}
+        {% elseif sortie.dateLimiteInscription|date("Y/m/d") < now|date("Y/m/d") %}
+            {% set etat='fermé' %}
+        {% elseif sortie.dateLimiteInscription|date("Y/m/d") > now|date("Y/m/d") %}
+            {% set etat='ouvert' %}
+        {% endif %}
+
+     {% if app.user.userIdentifier is null %}
+         {% else %}
         {% for inscription in app.user.inscriptions %}
             {% for inscriptions in sortie.inscriptions %}
                 {% if inscription == inscriptions %}
@@ -101,109 +114,80 @@
                 {% endif %}
             {% endfor %}
         {% endfor %}
-        {% if participantInscrit == false %}
+
+        {% endif %}
         <tr class="text-center">
             <td scope="row">{{ sortie.nom }}</td>
-            <td scope="row">{{ sortie.dateHeureDebut|date("d/m/Y") }}</td>
+            <td scope="row">le {{ sortie.dateHeureDebut|date("d/m/Y") }} à {{ sortie.dateHeureDebut|date("H:i") }}</td>
             <td scope="row">{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
             <td scope="row">{{ sortie.inscriptions|length }}/{{ sortie.nbInscriptionsMax }}</td>
-            <td scope="row">{{ sortie.etat }}</td>
-            <td scope="row">
-                {% if participantInscrit %}
-                    <p></p>
-                {% endif %}
-            </td>
-            <td scope="row">{{ sortie.organisateur.username }}</td>
-            <td scope="row">
-                {% if sortie.etat == 'ouvert' and sortie.organisateur.username==app.user.userIdentifier %}
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Afficher
-                    </a><a>             </a>
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Annuler
-                    </a>
-
-                {% elseif sortie.etat == 'ouvert'%}
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Afficher
-                    </a><a>             </a>
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        S'inscrire
-                    </a>
-
-                {% elseif sortie.etat == 'fermé'%}
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Afficher
-                    </a><a>             </a>
-                {% elseif sortie.etat == 'en cours'%}
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Afficher
-                    </a><a>             </a>
-                {% elseif sortie.etat == 'en création'%}
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Modifier
-                    </a><a>             </a>
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Publier
-                    </a>
-                {% elseif sortie.etat == 'annulé'%}
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Afficher
-                    </a><a>             </a>
-                {% endif %}
-            </td>
-        {% else %}
-        <tr class="text-center">
-            <td scope="row">{{ sortie.nom }}</td>
-            <td scope="row">{{ sortie.dateHeureDebut|date("d/m/Y") }}</td>
-            <td scope="row">{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
-            <td scope="row">{{ sortie.inscriptions|length }}/{{ sortie.nbInscriptionsMax }}</td>
-                <td scope="row">{{ sortie.etat }}</td>
+                <td scope="row">{{ etat }}</td>
                 <td scope="row">
-                    {% if participantInscrit %}
+                    {% if participantInscrit ==true %}
                         <p>🐼</p>
+                    {% else %}
+                        <p></p>
                     {% endif %}
                 </td>
-                <td scope="row">{{ sortie.organisateur.username }}</td>
+            <td scope="row"><a href="">{{ sortie.organisateur.username }}</a></td>
                 <td scope="row">
-                    {% if sortie.etat == 'ouvert' and sortie.organisateur.username==app.user.userIdentifier %}
+                   {% if  sortie.inscriptions|length== sortie.nbInscriptionsMax and etat == 'ouvert' %}
+                       {%  if participantInscrit %}
                     <a href=""  class="btn btn-primary btn-sm bouton">
                         Afficher
-                    </a><a>             </a>
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Annuler
                     </a>
-                    {% elseif sortie.etat == 'ouvert' and participantInscrit%}
-                        <a href=""  class="btn btn-primary btn-sm bouton">
-                            Afficher
-                        </a><a>             </a>
                         <a href=""  class="btn btn-primary btn-sm bouton">
                             Se désister
                         </a>
-                    {% elseif sortie.etat == 'ouvert'%}
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        Afficher
-                    </a><a>             </a>
-                    <a href=""  class="btn btn-primary btn-sm bouton">
-                        S'inscrire
-                    </a>
+                       {% else %}
+                           <a href=""  class="btn btn-primary btn-sm bouton">
+                               Afficher
+                           </a>
+                        {% endif %}
 
-                    {% elseif sortie.etat == 'fermé'%}
+                   {% elseif sortie.inscriptions|length<sortie.nbInscriptionsMax and etat == 'ouvert' and sortie.organisateur.username==app.user.userIdentifier %}
+                       <a href=""  class="btn btn-primary btn-sm bouton">
+                           Afficher
+                       </a><a>             </a>
+                       <a href=""  class="btn btn-primary btn-sm bouton">
+                           Annuler
+                       </a>
+
+                    {% elseif sortie.inscriptions|length<sortie.nbInscriptionsMax and etat == 'ouvert' %}
+                         {%  if participantInscrit %}
                     <a href=""  class="btn btn-primary btn-sm bouton">
                         Afficher
                     </a><a>             </a>
-                    {% elseif sortie.etat == 'en cours'%}
+                    <a href=""  class="btn btn-primary btn-sm bouton">
+                        Se désister
+                    </a>
+                        {% else %}
                         <a href=""  class="btn btn-primary btn-sm bouton">
                             Afficher
                         </a><a>             </a>
-                    {% elseif sortie.etat == 'en création'%}
+                        <a href=""  class="btn btn-primary btn-sm bouton">
+                        S'inscrire
+                    </a>
+                         {% endif %}
+
+
+
+                    {% elseif etat == 'fermé'%}
+                    <a href=""  class="btn btn-primary btn-sm bouton">
+                        Afficher
+                    </a><a>             </a>
+                    {% elseif etat == 'en cours'%}
+                        <a href=""  class="btn btn-primary btn-sm bouton">
+                            Afficher
+                        </a><a>             </a>
+                    {% elseif etat == 'en création'%}
                         <a href=""  class="btn btn-primary btn-sm bouton">
                             Modifier
                         </a><a>             </a>
                         <a href=""  class="btn btn-primary btn-sm bouton">
                             Publier
                         </a>
-                    {% elseif sortie.etat == 'annulé'%}
+                    {% elseif etat == 'annulé'%}
                         <a href=""  class="btn btn-primary btn-sm bouton">
                             Afficher
                         </a><a>             </a>
@@ -211,7 +195,6 @@
                 </td>
 
                <br>
-            {% endif %}
 
             {% else %}
                 <p>Aucun voeu trouvé</p>
@@ -219,6 +202,7 @@
             {% endfor %}
         </tr>
         </tbody>
+
     </table>
 
 <br> <br>

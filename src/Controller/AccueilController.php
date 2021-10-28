@@ -23,21 +23,29 @@ class AccueilController extends AbstractController
     {
 
         $sortiesListe = null;
+        $pasInscrit = null;
+        $inscrit = null;
         $form = $this->createForm(FiltresType::class, null);
         $form->handleRequest($request);
+        $now = new DateTime();
 
-            $now = new DateTime();
+        if ($form->isSubmitted() and $form->isValid()){
 
-            $lieu = $form['site']->getData();
+            //récupération des données du formulaire
+        $lieu = $form['site']->getData();
+        $debut = $form['debut']->getData();
+        $fin = $form['fin']->getData();
+        $organisateur = $form['organisateur']->getData();
+        $inscrit = $form['inscrit']->getData();
+        $pasInscrit = $form['pasInscrit']->getData();
+        $sortiePassee = $form['sortiePassee']->getData();
 
-            $debut = $form['debut']->getData();
-            $fin = $form['fin']->getData();
-            $organisateur = $form['organisateur']->getData();
-            $inscrit = $form['inscrit']->getData();
-            $pasInscrit = $form['pasInscrit']->getData();
-            $sortiePassee = $form['sortiePassee']->getData();
-      //      $user = $em->getRepository(Participant::class)->find($this->getUser()->getUserIdentifier());
-        //    $this->sortiesListe = $sortieRepository->findAllFilter($user, $lieu,$organisateur);
+        $user = $em->getRepository(Participant::class)->find($this->getUser()->getUserIdentifier());
+
+        //gestion des filtres
+        $this->sortiesListe = $sortieRepository->findAllFilter($user, $lieu, $organisateur);
+    }
+
         $sortiesListe= $sortieRepository->findAll();
 
         return $this->render('accueil/afficherListeSorties.html.twig', [

@@ -2,8 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Filtres;
+use App\Entity\Participant;
+use App\Entity\Site;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -18,6 +22,75 @@ class SortieRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Sortie::class);
     }
+
+    /**
+     * @return Sortie[]
+     */
+    public function findAllFilter(Filtres $recherche, $id)
+    {
+        $qb = $this->createQueryBuilder('f');
+//                    ->select('si', 's')
+//                    ->join('s.site', 'si');
+
+
+        if ($recherche->getSite()){
+            $qb ->andWhere('f.site = :site)')
+                ->setParameter('site', $recherche->getSite()->getId());
+        }
+
+        if ($recherche->getNom()){
+            $mots = explode(" ", $recherche->getNom());
+            $qb ->andWhere('so.nom LIKE :mot')
+                ->setParameter('mot', "%".$mots[0]."%");
+            for ($i = 1; $i <sizeof($mots); $i++){
+                $qb->orWhere("so.nom LIKE :mot".$i)
+                    ->setParameter('mot'.$i, "%".$mots[$i]."%");
+            }
+        }
+
+        if ($recherche->getDebut()){
+            $starttime = strtotime($recherche->getDebut());
+            $startnewformat = date('Y-m-d',$starttime);
+            $qb ->andWhere('so.dateHeuredebut >= :debut')
+                ->setParameter('debut', $startnewformat);
+        }
+        if ($recherche->getFin()){
+            $stoptime = strtotime($recherche->getFin());
+            $stopnewformat = date('Y-m-d',$stoptime);
+            $qb ->andWhere('so.dateLimiteInscription <= :fin')
+                ->setParameter('fin', $stopnewformat);
+        }
+
+        if ($recherche->getSortiePassee()){
+               $qb= $qb
+                   ->andWhere('so.debut <= :sortiePassee')
+                   ->setParameter('sortiePassee', $recherche->getSortiePassee(),  date('Y-m-d H:i:s'));
+            }
+
+        if ($recherche->getOrganisateur()){
+            $qb = $qb
+                ->andWhere('so.organisateur = :organisateur')
+                ->setParameter('organisateur', $id);
+        }
+
+//        if ($inscrit){
+//            $qb = $qb
+//                ->andWhere(':inscrit MEMBER OF f.participants')
+//                ->setParameter('inscrit', $id);
+//        }
+//
+//        if ($pasInscrit){
+//            $qb = $qb
+//                ->andWhere('f.pasInscrit = :pasInscrit')
+//                ->setParameter('pasInscrit', $id);
+//        }
+
+
+        $qb = $qb->getQuery();
+        dump($qb);
+        return $qb->execute();
+    }
+
 
     // /**
     //  * @return Sortie[] Returns an array of Sortie objects

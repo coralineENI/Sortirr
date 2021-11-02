@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title%}Gestion des lieux{% endblock %}
+
+{% block body%}
+    <div class="text-center">
+        <h1>Gérer les lieux</h1>
+    </div>
+
+    <div class="container col-6">
+        <div class="form-group">
+                <h4>Filtrer les lieux : </h4>
+                <div class="d-flex align-items-start">
+                    <h6>Le nom contient: </h6>
+                    <input class="form-control mr-sm-2" type="search" placeholder="ma recherche">
+                    <button class="btn btn-outline-success" type="submit">Rechercher</button>
+                </div>
+        </div>
+        <div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">Ville</th>
+{#                        <th scope="col" class="text-center">Code Postal</th>#}
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </head>
+                <tbody>
+                    {%  for user in utiliss %}
+                    <tr>
+                        <th scope="row">SAINT-HERBLAIN</th>
+{#                        <td>44800</td>#}
+                        <td>
+                            <a href="#" class="card-link">Modifier</a>
+                            <a href="#" class="card-link">Supprimer</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+{#                        <td></td>#}
+                        <td>
+                            <a href="#" class="card-link">Modifier</a>
+                            <a href="#" class="card-link">Supprimer</a>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+{#                        <td>Larry the Bird</td>#}
+{#                        <td>#}
+{#                            <a href="#" class="card-link">Modifier</a>#}
+{#                            <a href="#" class="card-link">Supprimer</a>#}
+{#                        </td>#}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <button type="button" class="btn btn-outline-success">Ajouter</button>
+        </div>
+    </div>
+{% endblock %}
+

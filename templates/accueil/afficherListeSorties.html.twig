@@ -103,6 +103,9 @@
         {% elseif sortie.dateLimiteInscription|date("Y/m/d") > now|date("Y/m/d") %}
             {% set etat='ouvert' %}
         {% endif %}
+        {% if sortie.etat=="annulée" %}
+        {% set etat='annulée' %}
+        {% endif %}
         {% set dateDebut = sortie.dateHeuredebut|date('Y-m-d') %}
         {% set dateDifference = "now"|date('Y-m-d') %}
         {% set archive = date(dateDifference).diff(date(dateDebut))%}

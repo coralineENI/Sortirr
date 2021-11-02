@@ -40,36 +40,36 @@ class SortieRepository extends ServiceEntityRepository
 
         if ($recherche->getNom()){
             $mots = explode(" ", $recherche->getNom());
-            $qb ->andWhere('so.nom LIKE :mot')
+            $qb ->andWhere('f.nom LIKE :mot')
                 ->setParameter('mot', "%".$mots[0]."%");
             for ($i = 1; $i <sizeof($mots); $i++){
-                $qb->orWhere("so.nom LIKE :mot".$i)
+                $qb->orWhere("f.nom LIKE :mot".$i)
                     ->setParameter('mot'.$i, "%".$mots[$i]."%");
             }
         }
 
-        if ($recherche->getDebut()){
-            $starttime = strtotime($recherche->getDebut());
-            $startnewformat = date('Y-m-d',$starttime);
-            $qb ->andWhere('so.dateHeuredebut >= :debut')
-                ->setParameter('debut', $startnewformat);
-        }
-        if ($recherche->getFin()){
-            $stoptime = strtotime($recherche->getFin());
-            $stopnewformat = date('Y-m-d',$stoptime);
-            $qb ->andWhere('so.dateLimiteInscription <= :fin')
-                ->setParameter('fin', $stopnewformat);
-        }
+//        if ($recherche->getDebut()){
+//            $starttime = strtotime($recherche->getDebut());
+//            $startnewformat = date('Y-m-d',$starttime);
+//            $qb ->andWhere('so.dateHeuredebut >= :debut')
+//                ->setParameter('debut', $startnewformat);
+//        }
+//        if ($recherche->getFin()){
+//            $stoptime = strtotime($recherche->getFin());
+//            $stopnewformat = date('Y-m-d',$stoptime);
+//            $qb ->andWhere('so.dateLimiteInscription <= :fin')
+//                ->setParameter('fin', $stopnewformat);
+//        }
 
         if ($recherche->getSortiePassee()){
                $qb= $qb
-                   ->andWhere('so.debut <= :sortiePassee')
+                   ->andWhere('f.debut <= :sortiePassee')
                    ->setParameter('sortiePassee', $recherche->getSortiePassee(),  date('Y-m-d H:i:s'));
             }
 
         if ($recherche->getOrganisateur()){
             $qb = $qb
-                ->andWhere('so.organisateur = :organisateur')
+                ->andWhere('f.organisateur = :organisateur')
                 ->setParameter('organisateur', $id);
         }
 

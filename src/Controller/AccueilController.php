@@ -36,7 +36,7 @@ class AccueilController extends AbstractController
 
         $participant = $em->getRepository(Participant::class)->find($this->getUser()->getId());
 
-        $this->sortiesListe = $sortieRepository->findAllFilter($recherche);
+        $this->sortiesListe = $sortieRepository->findAllFilter($recherche, $participant);
 
         }
         else {

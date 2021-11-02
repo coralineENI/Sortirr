@@ -12,10 +12,10 @@
     {% endif %}
 <br>
     <h3>Filtrer les sorties</h3>
-<div id="cardfilter">
+<div class="jumbotron" id="cardfilter">
     {{ form_start(form) }}
     {{ form_errors(form) }}
-</div>
+
     <div class="row">
         <div class="form-col col-lg-8">
             <p class="form-group col-lg-auto">
@@ -26,11 +26,11 @@
             </p>
             <p class="form-group col-lg-auto">
                <label for="{{ field_name(form.debut) }}">Entre : </label>
-               <input type="date" {{ field_name(form.debut) }}>
+               <input type="date" name="{{ field_name(form.debut) }}">
             </p>
             <p class="form-group col-lg-auto">
                 <label for="{{ field_name(form.fin) }}">et :       </label>
-                <input type="date" {{ field_name(form.fin) }}>
+                <input type="date" name="{{ field_name(form.fin) }}">
             </p>
         </div>
         <div class="form-col col-md-auto blocFiltre">
@@ -61,10 +61,11 @@
         </div>
     </div>
     <br>
-    {{ form_row(form.submit) }}
-
-    {{ form_widget(form._token) }}
+{#    {{ form_row(form.submit) }}#}
+<button class="btn btn-primary btn-xl bouton">Rechercher</button>
+{#    {{ form_widget(form._token) }}#}
     {{ form_end(form) }}
+
     </div>
 <br>
 <hr>
@@ -104,7 +105,12 @@
         {% elseif sortie.dateLimiteInscription|date("Y/m/d") > now|date("Y/m/d") %}
             {% set etat='ouvert' %}
         {% endif %}
+        {% set dateDebut = sortie.dateHeuredebut|date('Y-m-d') %}
+        {% set dateDifference = "now"|date('Y-m-d') %}
+        {% set archive = date(dateDifference).diff(date(dateDebut))%}
 
+        {% if archive.days >= 30 %}
+        {% else %}
      {% if app.user.userIdentifier is null %}
          {% else %}
         {% for inscription in app.user.inscriptions %}
@@ -136,7 +142,7 @@
                     <a href=""  class="btn btn-primary btn-sm bouton">
                         Afficher
                     </a>
-                        <a href=""  class="btn btn-primary btn-sm bouton">
+                        <a href="{{ path('retrait_participant_sortie', {'id': sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                             Se désister
                         </a>
                        {% else %}
@@ -158,14 +164,14 @@
                     <a href=""  class="btn btn-primary btn-sm bouton">
                         Afficher
                     </a><a>             </a>
-                    <a href=""  class="btn btn-primary btn-sm bouton">
+                    <a href="{{ path('retrait_participant_sortie', {'id': sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                         Se désister
                     </a>
                         {% else %}
                         <a href=""  class="btn btn-primary btn-sm bouton">
                             Afficher
                         </a><a>             </a>
-                        <a href=""  class="btn btn-primary btn-sm bouton">
+                        <a href="{{ path('ajout_participant_sortie', {'id': sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                         S'inscrire
                     </a>
                          {% endif %}
@@ -195,9 +201,9 @@
                 </td>
 
                <br>
-
+            {% endif %}
             {% else %}
-                <p>Aucun voeu trouvé</p>
+                <p>Aucune sortie trouvée</p>
 
             {% endfor %}
         </tr>

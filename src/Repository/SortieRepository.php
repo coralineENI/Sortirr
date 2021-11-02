@@ -2,11 +2,12 @@
 
 namespace App\Repository;
 
-use App\Entity\Lieu;
+use App\Entity\Filtres;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -26,22 +27,74 @@ class SortieRepository extends ServiceEntityRepository
      * @return Sortie[]
      */
     public function findAllFilter(
-        Participant $user,
-        Site $formSite)
+        Participant $loguser,
+        Site $site = null,
+        bool $organisateur = false ,
+        string $nom = null,
+        string $debut = null,
+        string $fin = null,
+        bool $sortiePassee = false)
     {
         $qb = $this->createQueryBuilder('s');
+//                    ->select('si', 's')
+//                    ->join('s.site', 'si');
 
-        if ($formSite != null){
-            $qb ->andWhere('s.site = :site')
-                ->setParameter('site', $formSite->getId());
+
+        if ($site!=null){
+            $qb ->andWhere('s.site = :site)')
+                ->setParameter('site', $site->getId());
         }
 
-//        if ($organisateur){
-//            $qb ->andWhere('s.organisateur = :organisateur')
-//                ->setParameter('organisateur', $user->getId());
+        if ($nom!=null){
+            $mots = explode(" ", $nom);
+            $qb ->andWhere('s.nom LIKE :mot')
+                ->setParameter('mot', "%".$mots[0]."%");
+            for ($i = 1; $i <sizeof($mots); $i++){
+                $qb->orWhere("s.nom LIKE :mot".$i)
+                    ->setParameter('mot'.$i, "%".$mots[$i]."%");
+            }
+        }
+
+        if ($debut != null){
+            $starttime = strtotime($debut);
+            $startnewformat = date('Y-m-d',$starttime);
+            $qb ->andWhere('s.datedebut >= :datedebut')
+                ->setParameter('datedebut', $startnewformat);
+        }
+        if ($fin != null){
+            $stoptime = strtotime($fin);
+            $stopnewformat = date('Y-m-d',$stoptime);
+            $qb ->andWhere('s.datecloture <= :datecloture')
+                ->setParameter('datecloture', $stopnewformat);
+        }
+
+        if ($sortiePassee!= null){
+               $qb= $qb
+                   ->andWhere('f.debut <= :sortiePassee')
+                   ->setParameter('sortiePassee', $sortiePassee,  date('Y-m-d H:i:s'));
+            }
+
+        if ($organisateur){
+            $qb = $qb
+                ->andWhere('s.organisateur = :organisateur')
+                ->setParameter('organisateur', $loguser->getId());
+        }
+
+//        if ($inscrit){
+//            $qb = $qb
+//                ->andWhere(':inscrit MEMBER OF f.participants')
+//                ->setParameter('inscrit', $id);
+//        }
+//
+//        if ($pasInscrit){
+//            $qb = $qb
+//                ->andWhere('f.pasInscrit = :pasInscrit')
+//                ->setParameter('pasInscrit', $id);
 //        }
 
+
         $qb = $qb->getQuery();
+        dump($qb);
         return $qb->execute();
     }
 

@@ -6,13 +6,24 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use Serializable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ *
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
+ * @UniqueEntity(fields={"username"})
+ * @UniqueEntity(fields={"mail"})
+ * @Vich\Uploadable
+ *
  */
-class Participant implements UserInterface, PasswordAuthenticatedUserInterface
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface,Serializable
 {
     /**
      * @ORM\Id
@@ -34,16 +45,25 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\Length(min="8", minMessage="Votre mot de passe doit contenir au moins 8 caractères")
      */
     private $password;
 
+
+    /**
+     *  @Assert\EqualTo(propertyPath="password",message="Vos mots de passe doivent être identiques")
+     */
+    public $confirm_password;
+
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank()
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank()
      */
     private $prenom;
 
@@ -53,7 +73,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private $telephone;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255,unique=true)
+     * @Assert\Email()
+     * @Assert\NotBlank()
      */
     private $mail;
 
@@ -81,6 +103,20 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity=Inscription::class, mappedBy="participant")
      */
     private $inscriptions;
+
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string|null
+     */
+    private $image;
+
+    /**
+     * @Vich\UploadableField(mapping="profil_image", fileNameProperty="image")
+     * @Assert\File(mimeTypes={"image/png", "image/jpeg", "image/pjpeg"})
+     * @var File|null
+     */
+    private $imageFile;
 
 
     public function __construct()
@@ -126,7 +162,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_RIEN';
 
         return array_unique($roles);
     }
@@ -317,4 +353,56 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param ?string $image
+     */
+    public function setImage(?string $image): void
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File $imageFile
+     */
+    public function setImageFile(File $imageFile): void
+    {
+        $this->imageFile = $imageFile;
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+
+            $this->id,
+            $this->username,
+            $this->password,
+
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+
+            ) = unserialize($serialized);
+    }
 }

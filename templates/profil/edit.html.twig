@@ -1,0 +1,28 @@
+
+{% extends 'base.html.twig' %}
+
+{% form_theme formProfile 'bootstrap_5_layout.html.twig' %}
+
+
+{% block title %}Hello ProfileController!{% endblock %}
+
+{% block body %}
+
+<h1 class="text-center">Modifier le profil</h1>
+
+{% if app.user.image %}
+<div class="d-flex container">
+    <div class="container col-4 "><img src="{{ relative_path(vich_uploader_asset(app.user,'imageFile')) }}" alt="{{ app.user.nom }}" height="200"></div>
+<div class="container">
+{% endif %}
+    {{ form_start(formProfile) }}
+    {{ form_widget(formProfile) }}
+    <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
+</div>
+    <div>
+    {{ form_end(formProfile) }}
+
+
+
+        {% endblock %}
+

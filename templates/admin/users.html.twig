@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for message in app.flashes('success') %}
+        {% if message %}
+        <div class="alert-success">
+            <p class="text-center">{{ message }}</p>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+
+    <h1 class="text-center">Liste des participants</h1>
+    <br>
+    <br>
+
+    <table class="table text-center">
+        <thead>
+            <tr class="justify-content-center">
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Image</th>
+                <th>Statut</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for user in utiliss %}
+            <tr class="justify-content-center">
+
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+               {% if user.image  %}
+                    <td><img src="{{ relative_path(vich_uploader_asset(user,'imageFile')) }}" alt="{{ user.nom }}" height="30"></td>
+                   {% else %}
+                   <td></td>
+                {% endif%}
+
+                <td>
+                    {% if user.actif==0 %}
+                        <a href="{{ path('desactiver_activer_utilisateur',{'id': user.id}) }}" class="btn btn-secondary">Innactif</a>
+                    {% else %}
+                        <a href="{{ path('desactiver_activer_utilisateur',{'id': user.id}) }}" class="btn btn-success">Actif</a>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('detail_utilisateur',{'id': user.id}) }}" class="btn btn-info">Détails</a>
+
+                    <a href="{{ path('supprimer_utilisateur',{'id': user.id}) }}" class="btn btn-danger">Supprimer</a>
+                </td>
+
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Il n'y a pas d'utilisateur inscrit</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block title %} Liste des utilisateurs {% endblock %}
+

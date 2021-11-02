@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+
+            <h1 class="text-center">{{ util.username  }}</h1>
+
+            <div class="d-flex  container justify-content-around">
+                {% if util.image %}
+                    <div class="col-3"><img src="{{ relative_path(vich_uploader_asset(util,'imageFile')) }}" alt="{{ util.nom }}" height="200"></div>
+                {% endif %}
+                <div class="text-start">
+
+                    {% for rol in app.user.roles %}
+
+                    {% if rol=="ROLE_ADMIN"%}
+                        <p>Id : </p>
+                        <p>Prénom : </p>
+                        <p>Nom : </p>
+                        <p>Email : </p>
+                        <p>Téléphone : </p>
+                        <p>Role : </p>
+                        <p>Site de rattachement : </p>
+                </div>
+                <div>
+                        <p>{{ util.id }}</p>
+                        <p>{{ util.prenom }}</p>
+                        <p>{{ util.nom }}</p>
+                        <p>{{ util.mail }}</p>
+                        <p>{{ util.telephone }}</p>
+
+                        {% set continue = false %}
+
+                        {% for role in util.roles %}
+                            {% if role=="ROLE_ADMIN" %}
+                                <p>Administrateur</p>
+                                {% set continue = true %}
+                            {% endif %}
+                            {% if continue == false and role=="ROLE_USER" %}
+                                <p>Participant</p>
+                                {% set continue = true %}
+                            {% endif %}
+                            {% if continue == false and role=="ROLE_RIEN" %}
+                                <p>Compte désactivé</p>
+                                {% set continue = false %}
+                            {% endif %}
+                            {% if continue ==false %}
+                                {% set continue = false %}
+                            {% endif %}
+                        {% endfor %}
+                         <p>{{ util.site.nom}}</p>
+                </div>
+            </div>
+
+                <div class="text-center">
+                    {% if util.actif==0 %}
+                        <a href="{{ path('desactiver_activer_utilisateur',{'id': util.id}) }}" class="btn btn-secondary">Innactif</a>
+                    {% else %}
+                        <a href="{{ path('desactiver_activer_utilisateur',{'id': util.id}) }}" class="btn btn-success">Actif</a>
+                    {% endif %}
+                    <a href="{{ path("supprimer_utilisateur", {"id" : util.id }) }}" class="btn btn-danger">Supprimer</a>
+
+                    <a href="{{ path('utilisateurs') }}" class="btn btn-secondary">Retour</a>
+                </div>
+        {% elseif rol=="ROLE_USER"%}
+
+            <p>Prénom : </p>
+            <p>Nom : </p>
+            <p>Email : </p>
+            <p>Téléphone : </p>
+            <p>Site de rattachement : </p>
+            </div>
+            <div>
+                <p>{{ util.prenom }}</p>
+                <p>{{ util.nom }}</p>
+                <p>{{ util.mail }}</p>
+                <p>{{ util.telephone }}</p>
+                <p>{{ util.site.nom}}</p>
+            </div>
+            </div>
+
+            <div class="text-center">
+                  <a href="{{ path('utilisateurs') }}" class="btn btn-secondary">Retour</a>
+            </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block title %} Liste des utilisateurs {% endblock %}
+

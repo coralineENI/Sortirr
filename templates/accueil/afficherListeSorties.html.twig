@@ -3,7 +3,17 @@
 
 
 {% block body %}
+
+     {% for message in app.flashes('info') %}
+
+
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+
+    {% endfor %}
     <h1>Filtrer les sorties</h1>
+
 
     <br><br>
     <table id="sortieTable" class="table table-striped table-bordered" style="width:100%">
@@ -17,7 +27,6 @@
             <th scope="col">Inscrit</th>
             <th scope="col">Organisateur</th>
             <th scope="col">Actions</th>
-
         </tr>
         </thead>
         <tbody>

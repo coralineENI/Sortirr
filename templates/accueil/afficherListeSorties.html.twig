@@ -25,12 +25,10 @@
                 {{ form_row(form.nom) }}
             </p>
             <p class="form-group col-lg-auto">
-               <label for="{{ field_name(form.debut) }}">Entre : </label>
-               <input type="date" name="{{ field_name(form.debut) }}">
+              {{ form_row(form.debut) }}
             </p>
             <p class="form-group col-lg-auto">
-                <label for="{{ field_name(form.fin) }}">et :       </label>
-                <input type="date" name="{{ field_name(form.fin) }}">
+                {{ form_row(form.fin) }}
             </p>
         </div>
         <div class="form-col col-md-auto blocFiltre">

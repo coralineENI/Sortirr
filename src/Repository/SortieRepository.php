@@ -26,58 +26,51 @@ class SortieRepository extends ServiceEntityRepository
     /**
      * @return Sortie[]
      */
-    public function findAllFilter(
-        Participant $loguser,
-        Site $site = null,
-        bool $organisateur = false ,
-        string $nom = null,
-        string $debut = null,
-        string $fin = null,
-        bool $sortiePassee = false)
+    public function findAllFilter(Filtres $recherche, $id)
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('f');
 //                    ->select('si', 's')
 //                    ->join('s.site', 'si');
 
 
-        if ($site!=null){
-            $qb ->andWhere('s.site = :site)')
-                ->setParameter('site', $site->getId());
+        if ($recherche->getSite()){
+            $qb ->andWhere('f.site = :site)')
+                ->setParameter('site', $recherche->getSite()->getId());
         }
 
-        if ($nom!=null){
-            $mots = explode(" ", $nom);
-            $qb ->andWhere('s.nom LIKE :mot')
+        if ($recherche->getNom()){
+            $mots = explode(" ", $recherche->getNom());
+            $qb ->andWhere('so.nom LIKE :mot')
                 ->setParameter('mot', "%".$mots[0]."%");
             for ($i = 1; $i <sizeof($mots); $i++){
-                $qb->orWhere("s.nom LIKE :mot".$i)
+                $qb->orWhere("so.nom LIKE :mot".$i)
                     ->setParameter('mot'.$i, "%".$mots[$i]."%");
             }
         }
 
-        if ($debut != null){
-            $starttime = strtotime($debut);
+        if ($recherche->getDebut()){
+            $starttime = strtotime($recherche->getDebut());
             $startnewformat = date('Y-m-d',$starttime);
-            $qb ->andWhere('s.datedebut >= :datedebut')
-                ->setParameter('datedebut', $startnewformat);
+            $qb ->andWhere('so.dateHeuredebut >= :debut')
+                ->setParameter('debut', $startnewformat);
         }
-        if ($fin != null){
-            $stoptime = strtotime($fin);
+        if ($recherche->getFin()){
+            $stoptime = strtotime($recherche->getFin());
             $stopnewformat = date('Y-m-d',$stoptime);
-            $qb ->andWhere('s.datecloture <= :datecloture')
-                ->setParameter('datecloture', $stopnewformat);
+            $qb ->andWhere('so.dateLimiteInscription <= :fin')
+                ->setParameter('fin', $stopnewformat);
         }
 
-        if ($sortiePassee!= null){
+        if ($recherche->getSortiePassee()){
                $qb= $qb
-                   ->andWhere('f.debut <= :sortiePassee')
-                   ->setParameter('sortiePassee', $sortiePassee,  date('Y-m-d H:i:s'));
+                   ->andWhere('so.debut <= :sortiePassee')
+                   ->setParameter('sortiePassee', $recherche->getSortiePassee(),  date('Y-m-d H:i:s'));
             }
 
-        if ($organisateur){
+        if ($recherche->getOrganisateur()){
             $qb = $qb
-                ->andWhere('s.organisateur = :organisateur')
-                ->setParameter('organisateur', $loguser->getId());
+                ->andWhere('so.organisateur = :organisateur')
+                ->setParameter('organisateur', $id);
         }
 
 //        if ($inscrit){

@@ -21,34 +21,22 @@ class AccueilController extends AbstractController
 {
     /**
      * @Route("/", name="home")
+     * @return Response
      */
-    public function listeSorties(SortieRepository $sortieRepository, Request $request, EntityManagerInterface $em)
+    public function listeSorties(SortieRepository $sortieRepository, Request $request, EntityManagerInterface $em) : Response
     {
 
+        $recherche = new Filtres();
         $sortiesListe = null;
-        $pasInscrit = null;
-        $inscrit = null;
-        $nom = null ;
-        $form = $this->createForm(FiltreType::class,null );
+        $form = $this->createForm(FiltresType::class,$recherche );
         $form->handleRequest($request);
         $now = new DateTime();
 
         if ($form->isSubmitted() and $form->isValid()){
 
-            //récupération des données du formulaire
-        $site = $form['site']->getData();
-        $nom = $form['nom']->getData();
-        $debut = $form['debut']->getData();
-        $fin = $form['fin']->getData();
-        $organisateur = $form['organisateur']->getData();
-        $inscrit = $form['inscrit']->getData();
-        $pasInscrit = $form['pasInscrit']->getData();
-        $sortiePassee = $form['sortiePassee']->getData();
-
-        dump($form);
-
         $participant = $em->getRepository(Participant::class)->find($this->getUser()->getId());
-        $this->sortiesListe = $sortieRepository->findAllFilter($participant, $site,$nom, $organisateur , $debut, $fin, $sortiePassee);
+
+        $this->sortiesListe = $sortieRepository->findAllFilter($recherche);
 
         }
         else {
@@ -58,10 +46,6 @@ class AccueilController extends AbstractController
 
         return $this->render('accueil/afficherListeSorties.html.twig', [
             'now'=> $now,
-            'pasInscrit' => $pasInscrit,
-            'inscrit' => $inscrit,
-            'page_name' => "Sorties",
-            'app_name' => 'Evenements',
             'form' => $form->createView(),
             'sorties' => $sortiesListe
         ]);

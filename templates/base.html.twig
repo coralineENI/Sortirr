@@ -27,50 +27,54 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav ">
 
-                {#                {% if not app.user %}#}
+            {% if not app.user %}
                 <li class="nav-item">
                      <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
                 </li>
 
-                {#                {% else %}#}
+            {% else %}
 
-                {#                       {% for role in app.user.roles %}#}
-                {#                        {% if role=="ROLE_USER" %}#}
+              {% for role in app.user.roles %}
+
+                {% if role=="ROLE_USER" %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="">Sorties</a>
                 <li class="nav-item">
-                    <a class="nav-link" href="">Mon profil</a>
+                    <a class="nav-link" href="{{ path('edit_profile',{'id': app.user.id}) }}">Mon profil</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ path('app_logout') }}">Deconnexion </a>
                 </li>
 
-                {#                        {% elseif role=="ROLE_EDITOR" %}#}
+
                 <li class="nav-item">
-                   {#  <a class="nav-link" href="{{ path('creer_sortie') }}">Créer une sortie</a> #}
+                     <a class="nav-link" href="">Créer une sortie</a>
                 </li>
 
 
-                {#                        {% elseif role=="ROLE_ADMIN" %}#}
+              {% elseif role=="ROLE_ADMIN" %}
 
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_register') }}">Inscription</a>
                 </li>
                 <li class="nav-item">
-                {#     <a class="nav-link" href="{{ path('admin_utilisateurs') }}">Participants</a> #}
+                   <a class="nav-link" href="{{ path('utilisateurs') }}">Participants</a>
                 </li>
 
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ path('edit_profile',{'id': app.user.id}) }}">Mon profil</a>
+                  </li>
 
 
-
-                {#                        {% else %}#}
+                {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_logout') }}">Deconnexion </a>
                 </li>
-                {#                        {% endif %}#}
-                {#                    {% endfor %}#}
-                {#                {% endif %}#}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
             </ul>
         </div>
     </div>

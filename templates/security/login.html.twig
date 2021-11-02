@@ -2,35 +2,57 @@
 
 {% block title %}Connexion{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootswatch.com.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/stylehome.css') }}">
+{% endblock %}
+
 {% block body %}
 <form method="post">
 
-    {% if app.user %}
-        <div class="mb-3">
-            Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <h1 >Connectez-vous</h1>
-    <label for="inputUsername">Pseudo</label>
-    <input type="text" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Mot de passe</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
-
-
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Se souvenir de moi
-            </label>
+{#    {% if last_username %}
+        <div class="mb-3">
+            Vous etes connecté en tent   {{ user.userIdentifier }}
         </div>
 
+    {% endif %}#}
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Connexion
-    </button>
+    {% for message in app.flashes('notice') %}
+        <div class="flash-notice">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <h1 class="text-center m-5">Connexion sur le site Sortir.com</h1>
+    <div class="container col-5">
+
+            <label for="inputUsername">Identifient</label>
+            <input type="text" name="username" id="inputUsername" class="form-control" autocomplete="username" placeholder="email ou pseudo" required autofocus>
+            <label for="inputPassword">Mot de passe</label>
+            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="mot de passe" required>
+
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+
+            <div class="container text-center d-flex mt-4 ">
+
+                        <button class="btn btn-lg btn-primary" type="submit">Connexion</button>
+                <div class="container m-xxl-1">
+                        <div class="checkbox mb-3">
+                            <label><input type="checkbox" name="_remember_me"> Se souvenir de moi</label>
+                        </div>
+
+                        <div>
+                           <a class="text-white" href="{{ path('app_forgot_password_request') }}"> Mot de pass oublié ?</a>
+                       </div>
+                </div>
+            </div>
+    </div>
 </form>
 {% endblock %}

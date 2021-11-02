@@ -24,6 +24,7 @@ class CreerSortieController extends AbstractController
 
         $formSortie->handleRequest($request);
         if($formSortie->isSubmitted() && $formSortie->isValid()){
+            $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
             $em->flush();
             return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
@@ -35,24 +36,30 @@ class CreerSortieController extends AbstractController
     }
 
     /**
-     * @Route("sortie/modifier", name="modifier_sortie")
+     * @Route("sortie/modifier/{id}", name="modifier_sortie")
      */
     public function modifierSortie(int $id, Request $request, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted("ROLE_USER");
         $sortie = $em->getRepository(Sortie::class)->find($id);
         if(!$sortie){
             throw $this->createNotFoundException("Cette sortie n'existe pas");
         }
+        if ($sortie->getOrganisateur() != $this->getUser()) {
+            throw $this->createAccessDeniedException("Vous n'avez les droits de modification");
+        }
         $formSortie = $this->createForm(SortieType::class, $sortie);
         $formSortie->handleRequest($request);
         if($formSortie->isSubmitted() && $formSortie->isValid()){
-            $em->persist();
+            $sortie->setOrganisateur($this->getUser());
+            $em->persist($sortie);
             $em->flush();
             $this->addFlash('success', 'Sortie modifiée');
             return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
         }
-        return $this->render('creer_sortie/creer_sortie.html.twig', [
+        return $this->render('creer_sortie/modifier_sortie.html.twig', [
             'formSortie' => $formSortie->createView()
         ]);
     }
+
 }

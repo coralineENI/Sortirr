@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -64,10 +65,10 @@ class SortieType extends AbstractType
 //                ]
 //
 //            ])
-            ->add('organisateur', EntityType::class,[
-                'class' => Participant::class,
-                'choice_label' => 'nom'
-            ])
+//            ->add('organisateur', EntityType::class,[
+//                'class' => Participant::class,
+//                'choice_label' => 'nom'
+//            ])
             ->add('lieu', EntityType::class,[
                 'class' => Lieu::class,
                 'placeholder' => '- Choisissez un lieu -'
@@ -75,6 +76,12 @@ class SortieType extends AbstractType
             ->add('site', EntityType::class,[
                 'class' => Site::class,
                 'placeholder' => '- Choisissez un site -'
+            ])
+            ->add('enregistrer', SubmitType::class,[
+                'label'=>'Enregistrer'
+            ])
+            ->add('publier', SubmitType::class,[
+                'label'=>'Publier'
             ])
         ;
     }

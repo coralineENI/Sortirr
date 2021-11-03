@@ -24,6 +24,11 @@ class CreerSortieController extends AbstractController
 
         $formSortie->handleRequest($request);
         if($formSortie->isSubmitted() && $formSortie->isValid()){
+            if($formSortie->get('enregistrer')->isClicked()){
+                $sortie->setEtat('en création');
+            }elseif($formSortie->get('publier')->isClicked()){
+                $sortie->setEtat('ouvert');
+            }
             $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
             $em->flush();
@@ -59,6 +64,33 @@ class CreerSortieController extends AbstractController
         }
         return $this->render('creer_sortie/modifier_sortie.html.twig', [
             'formSortie' => $formSortie->createView()
+        ]);
+    }
+
+    /**
+     * @Route("sortie/annuler/{id}", name="annuler_sortie")
+     */
+    public function annulerSortie(Sortie $sortie, Request $request,EntityManagerInterface $em)
+    {
+        $this->denyAccessUnlessGranted("ROLE_USER");
+        $sortie = $em->getRepository(Sortie::class)->find($sortie);
+        if(!$sortie){
+            throw $this->createNotFoundException("Cette sortie n'existe pas");
+        }
+        if ($sortie->getOrganisateur() != $this->getUser()) {
+            throw $this->createAccessDeniedException("Vous ne pouvez pas annuler cette sortie");
+        }
+        $formAnnulerSortie = $this->createForm(SortieType::class, $sortie);
+        $formAnnulerSortie->handleRequest($request);
+        if($formAnnulerSortie->isSubmitted() && $formAnnulerSortie->isValid()){
+            $sortie->setOrganisateur($this->getUser());
+            $em->persist($sortie);
+            $em->flush();
+            $this->addFlash('success', 'Sortie annulée');
+            return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
+        }
+        return $this->render('creer_sortie/annuler_sortie.html.twig', [
+            'formAnnulerSortie' => $formAnnulerSortie->createView()
         ]);
     }
 

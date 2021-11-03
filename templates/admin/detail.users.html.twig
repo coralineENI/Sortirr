@@ -27,8 +27,11 @@
                         <p>{{ util.prenom }}</p>
                         <p>{{ util.nom }}</p>
                         <p>{{ util.mail }}</p>
+                    {% if util.telephone!=null %}
                         <p>{{ util.telephone }}</p>
-
+                    {% else %}
+                        <p>Non renseigné</p>
+                    {% endif %}
                         {% set continue = false %}
 
                         {% for role in util.roles %}
@@ -74,7 +77,11 @@
                 <p>{{ util.prenom }}</p>
                 <p>{{ util.nom }}</p>
                 <p>{{ util.mail }}</p>
-                <p>{{ util.telephone }}</p>
+                {% if util.telephone!=null %}
+                    <p>{{ util.telephone }}</p>
+                {% else %}
+                    <p>Non renseigné</p>
+                {% endif %}
                 <p>{{ util.site.nom}}</p>
             </div>
             </div>

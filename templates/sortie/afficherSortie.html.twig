@@ -12,26 +12,24 @@
     <div class="text-center">
     <h1>Afficher une sortie </h1>
     </div>
-    {% for user in utiliss %}
         <div class="d-flex justify-content-around">
             <div>
-                <p>Nom de la sortie : {{ user.nom}} </p>
-                <p>Date et heure de la sortie :  </p>
-                <p>Date limite d'inscription : </p>
-                <p>Nombre de places : </p>
-                <p>Durée : </p>
-                <p>description et infos : </p>
+                <p>Nom de la sortie : {{ sortie.nom }} </p>
+                <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date}}  </p>
+                <p>Date limite d'inscription : {{ sortie.dateLimiteInscription | date }}</p>
+                <p>Nombre de places : {{ sortie.nbInscriptionsMax }}</p>
+                <p>Durée : {{ sortie.duree }}</p>
+                <p>description et infos : {{ sortie.infosSortie }}</p>
             </div>
             <div>
-                <p>Lieu : </p>
-                <p>Rue : </p>
-                <p>Ville : </p>
-                <p>Code Postale : </p>
-                <p>Latitude : </p>
-                <p>Longitude : </p>
+                <p>Lieu : {{ sortie.lieu }}</p>
+                <p>Rue : {{ sortie.lieu.rue }}</p>
+                <p>Ville : {{ sortie.lieu.ville.nom }}</p>
+                <p>Code Postale : {{ sortie.lieu.ville.codePostal}} </p>
+                <p>Latitude : {{ sortie.lieu.latitude }}</p>
+                <p>Longitude : {{ sortie.lieu.longitude }}</p>
             </div>
         </div>
-    {% endfor %}
 
         <div class="d-flex justify-content-around">
             <div class="form-group">
@@ -40,23 +38,31 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th scope="col" class="text-center">Pseudo</th>
                             <th scope="col" class="text-center">Nom</th>
+                            <th scope="col" class="text-center">Prénom</th>
                         </tr>
                         </head>
                         <tbody>
-                        {%  for user in utiliss %}
+{% for inscrit in sortie.inscriptions %}
+
                             <tr>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.nom }} {{ user.prenom }}</td>
+                                <td> {{ inscrit.participant.nom }} </td>
+                                <td> {{ inscrit.participant.prenom }} </td>
 
                             </tr>
-                        {% endfor %}
+{% endfor %}
                         </tbody>
                     </table>
                 </div>
                 <div>
                     <a href="{{ path('ajout_participant_sortie', {'id' : 1}) }} " class="btn btn-outline-success ">Inscription</a>
+
+                    {% if sortie.organisateur == app.user() %}
+                    <a href="{{ path('ajout_participant_sortie', {'id' : 1}) }} " class="btn btn-success ">Modifier</a>
+                    <a href="{{ path('ajout_participant_sortie', {'id' : 1}) }} " class="btn btn-danger ">Annuler</a>
+                    {% endif %}
+
+                    <a href="{{ path('ajout_participant_sortie', {'id' : 1}) }} " class="btn btn-secondary ">Retour</a>
                 </div>
     </div>
 

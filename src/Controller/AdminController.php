@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Inscription;
 use App\Entity\Participant;
+use App\Entity\Sortie;
+use App\Repository\InscriptionRepository;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +34,19 @@ class AdminController extends AbstractController
         ]);
     }
 
+
+    /**
+     * @Route("/sortie/{id}", name="detail_sortie")
+     */
+    public function detailSortie(int $id,SortieRepository  $sortieRepository) :Response
+    {
+        $sortie=$this->getDoctrine()->getRepository(Sortie::class)->find($id);
+        return  $this->render('sortie/afficherSortie.html.twig',[
+            'sortie' => $sortie
+        ]);
+    }
+
+
     /**
      * @Route("/utilisateur/detaiil/{id}", name="detail_utilisateur",requirements={"id"="\d+"}),methods={"GET"})
      */
@@ -46,6 +63,8 @@ class AdminController extends AbstractController
 
         ]);
     }
+
+
 
     /**
      * @Route("/utilisteur/supprimer/{id}", name="supprimer_utilisateur")

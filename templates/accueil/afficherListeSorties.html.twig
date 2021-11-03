@@ -3,6 +3,13 @@
 {% form_theme form "bootstrap_5_layout.html.twig" %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        {% if message %}
+            <div class="alert-success">
+                <p class="text-center">{{ message }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
 
     <br>
     {% if app.user %}
@@ -141,7 +148,7 @@
                         <p></p>
                     {% endif %}
                 </td>
-            <td scope="row"><a href="">{{ sortie.organisateur.username }}</a></td>
+            <td scope="row"><a href="{{ path('detail_utilisateur', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></td>
                 <td scope="row">
                    {% if  sortie.inscriptions|length== sortie.nbInscriptionsMax and etat == 'ouvert' %}
                        {%  if participantInscrit %}

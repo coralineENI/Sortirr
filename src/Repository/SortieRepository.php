@@ -7,6 +7,7 @@ use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,23 +25,23 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Sortie[]
+     * @return Query
+     *
      */
-    public function findAllFilter(Filtres $recherche, $id)
+    public function findAllFilter(Filtres $recherche, $id) : Query
     {
         $qb = $this->createQueryBuilder('f');
-//                    ->select('si', 's')
-//                    ->join('s.site', 'si');
 
 
         if ($recherche->getSite()){
-            $qb ->andWhere('f.site = :site)')
-                ->setParameter('site', $recherche->getSite()->getId());
+            $qb = $qb
+                ->andWhere('f.site = :site)')
+                ->setParameter('site', $recherche->getSite());
         }
 
         if ($recherche->getNom()){
             $mots = explode(" ", $recherche->getNom());
-            $qb ->andWhere('f.nom LIKE :mot')
+            $qb ->andWhere("f.nom LIKE :mot")
                 ->setParameter('mot', "%".$mots[0]."%");
             for ($i = 1; $i <sizeof($mots); $i++){
                 $qb->orWhere("f.nom LIKE :mot".$i)
@@ -62,7 +63,7 @@ class SortieRepository extends ServiceEntityRepository
 //        }
 
         if ($recherche->getSortiePassee()){
-               $qb= $qb
+               $qb = $qb
                    ->andWhere('f.debut <= :sortiePassee')
                    ->setParameter('sortiePassee', $recherche->getSortiePassee(),  date('Y-m-d H:i:s'));
             }
@@ -85,10 +86,7 @@ class SortieRepository extends ServiceEntityRepository
 //                ->setParameter('pasInscrit', $id);
 //        }
 
-
-        $qb = $qb->getQuery();
-        dump($qb);
-        return $qb->execute();
+        return   $qb->getQuery();
     }
 
 

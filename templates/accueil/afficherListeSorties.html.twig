@@ -73,7 +73,7 @@
             </a></center>
     </div>
 
-    <table id="sortieTable" class="table table-striped table-bordered" style="width:100%">
+    <table id="sortieTable" class="table table-striped table-bordered" style="">
         <thead class="thead-dark text-center">
         <tr>
             <th scope="col">Nom de la sortie</th>
@@ -106,10 +106,15 @@
         {% if sortie.etat=="annulée" %}
         {% set etat='annulée' %}
         {% endif %}
+        {% if sortie.etat=="en création" %}
+            {% set etat='en création' %}
+        {% endif %}
         {% set dateDebut = sortie.dateHeuredebut|date('Y-m-d') %}
         {% set dateDifference = "now"|date('Y-m-d') %}
         {% set archive = date(dateDifference).diff(date(dateDebut))%}
 
+        {% if app.user.userIdentifier != sortie.organisateur.username and etat=='en création' %}
+        {% else %}
         {% if archive.days >= 30 %}
         {% else %}
      {% if app.user.userIdentifier is null %}
@@ -151,7 +156,13 @@
                                Afficher
                            </a>
                         {% endif %}
-
+                   {% elseif sortie.organisateur.username==app.user.userIdentifier and etat == 'en création'%}
+                       <a href=""  class="btn btn-primary btn-sm bouton">
+                           Modifier
+                       </a><a>             </a>
+                       <a href=""  class="btn btn-primary btn-sm bouton">
+                           Publier
+                       </a>
                    {% elseif sortie.inscriptions|length<sortie.nbInscriptionsMax and etat == 'ouvert' and sortie.organisateur.username==app.user.userIdentifier %}
                        <a href=""  class="btn btn-primary btn-sm bouton">
                            Afficher
@@ -187,13 +198,6 @@
                         <a href=""  class="btn btn-primary btn-sm bouton">
                             Afficher
                         </a><a>             </a>
-                    {% elseif etat == 'en création'%}
-                        <a href=""  class="btn btn-primary btn-sm bouton">
-                            Modifier
-                        </a><a>             </a>
-                        <a href=""  class="btn btn-primary btn-sm bouton">
-                            Publier
-                        </a>
                     {% elseif etat == 'annulé'%}
                         <a href=""  class="btn btn-primary btn-sm bouton">
                             Afficher
@@ -202,6 +206,7 @@
                 </td>
 
                <br>
+            {% endif %}
             {% endif %}
             {% else %}
                 <p>Aucune sortie trouvée</p>

@@ -49,18 +49,16 @@ class SortieRepository extends ServiceEntityRepository
             }
         }
 
-//        if ($recherche->getDebut()){
-//            $starttime = strtotime($recherche->getDebut());
-//            $startnewformat = date('Y-m-d',$starttime);
-//            $qb ->andWhere('so.dateHeuredebut >= :debut')
-//                ->setParameter('debut', $startnewformat);
-//        }
-//        if ($recherche->getFin()){
-//            $stoptime = strtotime($recherche->getFin());
-//            $stopnewformat = date('Y-m-d',$stoptime);
-//            $qb ->andWhere('so.dateLimiteInscription <= :fin')
-//                ->setParameter('fin', $stopnewformat);
-//        }
+        dump($qb);
+        if ($recherche->getDebut()){
+            $qb ->andWhere('f.dateHeuredebut >= :debut')
+                ->setParameter('debut', $recherche);
+        }
+        if ($recherche->getFin()){
+
+            $qb ->andWhere('f.dateLimiteInscription <= :fin')
+                ->setParameter('fin', $recherche);
+        }
 
         if ($recherche->getSortiePassee()){
                $qb = $qb
@@ -74,17 +72,17 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('organisateur', $id);
         }
 
-//        if ($inscrit){
-//            $qb = $qb
-//                ->andWhere(':inscrit MEMBER OF f.participants')
-//                ->setParameter('inscrit', $id);
-//        }
-//
-//        if ($pasInscrit){
-//            $qb = $qb
-//                ->andWhere('f.pasInscrit = :pasInscrit')
-//                ->setParameter('pasInscrit', $id);
-//        }
+        if ($recherche->getInscrit()){
+            $qb = $qb
+                ->andWhere(':inscrit = f.Inscrit')
+                ->setParameter('inscrit', $id);
+        }
+
+        if ($recherche->getPasInscrit()){
+            $qb = $qb
+                ->andWhere('f.pasInscrit = :pasInscrit')
+                ->setParameter('pasInscrit', $id);
+        }
 
         return   $qb->getQuery();
     }

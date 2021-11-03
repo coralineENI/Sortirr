@@ -38,7 +38,7 @@ class CreerSortieController extends AbstractController
             $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
             $em->flush();
-            dd($sortie);
+           // dd($sortie);
             return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
         }
 

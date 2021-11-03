@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
+
     {% for message in app.flashes('success') %}
         {% if message %}
         <div class="alert-success">
@@ -24,7 +24,7 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="click-event box">
 
         {% for user in utiliss %}
             <tr class="justify-content-center">
@@ -45,9 +45,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{{ path('detail_utilisateur',{'id': user.id}) }}" class="btn btn-info">Détails</a>
+                    <a id="btn-bb" href="{{ path('detail_utilisateur',{'id': user.id}) }}" class="btn btn-info">Détails</a>
 
-                    <a href="{{ path('supprimer_utilisateur',{'id': user.id}) }}" class="btn btn-danger">Supprimer</a>
+                    <a id="btnDelete" href="{{ path('supprimer_utilisateur',{'id': user.id}) }}" class="btn btn-danger">Supprimer</a>
                 </td>
 
             </tr>
@@ -63,4 +63,8 @@
 {% endblock %}
 
 {% block title %} Liste des utilisateurs {% endblock %}
+
+{% block javascripts %}    <script src="{{ asset('JS/Scripts.js') }}"></script>
+{% endblock %}
+
 

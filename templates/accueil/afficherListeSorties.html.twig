@@ -157,7 +157,7 @@
                        <a href="{{ path('modifier_sortie', {'id':sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                            Modifier
                        </a><a>             </a>
-                       <a href=""  class="btn btn-primary btn-sm bouton">
+                       <a href="{{ path('publier_sortie', {'id':sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                            Publier
                        </a>
                    {% elseif sortie.inscriptions|length<sortie.nbInscriptionsMax and etat == 'ouvert' and sortie.organisateur.username==app.user.userIdentifier %}

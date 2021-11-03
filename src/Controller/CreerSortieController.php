@@ -27,10 +27,12 @@ class CreerSortieController extends AbstractController
 
         if($formSortie->isSubmitted() && $formSortie->isValid()){
             $sortie=$formSortie->getData();
+
             if($formSortie->get('enregistrer')->isClicked()){
                 $sortie->setEtat("en création");
             }elseif($formSortie->get('publier')->isClicked()){
                 $sortie->setEtat("ouvert");
+                dump($sortie);
             }else{
                 return $this->redirectToRoute('home');
             }
@@ -63,6 +65,17 @@ class CreerSortieController extends AbstractController
         $formSortie = $this->createForm(SortieType::class, $sortie);
         $formSortie->handleRequest($request);
         if($formSortie->isSubmitted() && $formSortie->isValid()){
+
+            $sortie=$formSortie->getData();
+
+            if($formSortie->get('enregistrer')->isClicked()){
+                $sortie->setEtat("en création");
+            }elseif($formSortie->get('publier')->isClicked()){
+                $sortie->setEtat("ouvert");
+                dump($sortie);
+            }else{
+                return $this->redirectToRoute('home');
+            }
 
             $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
@@ -103,5 +116,26 @@ class CreerSortieController extends AbstractController
             'sortie'=>$sortie
         ]);
     }
+
+    /**
+     * @Route("sortie/publier/{id}", name="publier_sortie")
+     */
+    public function publierSortie(int $id, Request $request, EntityManagerInterface $em)
+    {
+
+        $sortie = $em->getRepository(Sortie::class)->find($id);
+
+        $sortie->setEtat("ouvert");
+
+
+        $sortie->setOrganisateur($this->getUser());
+        $em->persist($sortie);
+        $em->flush();
+        $this->addFlash('success', 'Sortie publiée');
+
+        return $this->redirectToRoute('home',['id'=>$sortie->getId()
+        ]);
+    }
+
 
 }

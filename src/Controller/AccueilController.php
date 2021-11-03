@@ -40,7 +40,7 @@ class AccueilController extends AbstractController
         }
         else {
             $sortiesListe = $sortieRepository->findAll();
-            dump($sortiesListe);
+           // dump($sortiesListe);
         }
 
 

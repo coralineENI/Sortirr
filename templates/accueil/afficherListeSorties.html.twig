@@ -103,8 +103,8 @@
         {% elseif sortie.dateLimiteInscription|date("Y/m/d") > now|date("Y/m/d") %}
             {% set etat='ouvert' %}
         {% endif %}
-        {% if sortie.etat=="annulée" %}
-        {% set etat='annulée' %}
+        {% if sortie.etat=="annulé" %}
+        {% set etat='annulé' %}
         {% endif %}
         {% if sortie.etat=="en création" %}
             {% set etat='en création' %}
@@ -115,19 +115,17 @@
 
         {% if app.user.userIdentifier != sortie.organisateur.username and etat=='en création' %}
         {% else %}
-        {% if archive.days >= 30 %}
-        {% else %}
-     {% if app.user.userIdentifier is null %}
-         {% else %}
-        {% for inscription in app.user.inscriptions %}
-            {% for inscriptions in sortie.inscriptions %}
-                {% if inscription == inscriptions %}
-                    {% set participantInscrit = true %}
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
+            {% if archive.days >= 30 %}
+            {% else %}
 
-        {% endif %}
+                    {% for inscription in app.user.inscriptions %}
+                        {% for inscriptions in sortie.inscriptions %}
+                            {% if inscription == inscriptions %}
+                                {% set participantInscrit = true %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+
         <tr class="text-center">
             <td scope="row">{{ sortie.nom }}</td>
             <td scope="row">le {{ sortie.dateHeureDebut|date("d/m/Y") }} à {{ sortie.dateHeureDebut|date("H:i") }}</td>
@@ -141,7 +139,7 @@
                         <p></p>
                     {% endif %}
                 </td>
-            <td scope="row"><a href="">{{ sortie.organisateur.username }}</a></td>
+            <td scope="row"><a href={{ path('detail_utilisateur', {'id': sortie.organisateur.id}) }}>{{ sortie.organisateur.username }}</a></td>
                 <td scope="row">
                    {% if  sortie.inscriptions|length== sortie.nbInscriptionsMax and etat == 'ouvert' %}
                        {%  if participantInscrit %}
@@ -167,7 +165,7 @@
                        <a href=""  class="btn btn-primary btn-sm bouton">
                            Afficher
                        </a><a>             </a>
-                       <a href=""  class="btn btn-primary btn-sm bouton">
+                       <a href="{{ path('annuler_sortie', {'id':sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                            Annuler
                        </a>
 
@@ -206,7 +204,9 @@
                 </td>
 
                <br>
+
             {% endif %}
+
             {% endif %}
             {% else %}
                 <p>Aucune sortie trouvée</p>

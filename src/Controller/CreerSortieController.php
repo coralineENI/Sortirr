@@ -24,15 +24,21 @@ class CreerSortieController extends AbstractController
         $formSortie = $this->createForm(SortieType::class, $sortie);
 
         $formSortie->handleRequest($request);
+
         if($formSortie->isSubmitted() && $formSortie->isValid()){
+            $sortie=$formSortie->getData();
             if($formSortie->get('enregistrer')->isClicked()){
-                $sortie->setEtat('en création');
+                $sortie->setEtat("en création");
             }elseif($formSortie->get('publier')->isClicked()){
-                $sortie->setEtat('ouvert');
+                $sortie->setEtat("ouvert");
+            }else{
+                return $this->redirectToRoute('home');
             }
+
             $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
             $em->flush();
+            dd($sortie);
             return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
         }
 
@@ -57,6 +63,7 @@ class CreerSortieController extends AbstractController
         $formSortie = $this->createForm(SortieType::class, $sortie);
         $formSortie->handleRequest($request);
         if($formSortie->isSubmitted() && $formSortie->isValid()){
+
             $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
             $em->flush();
@@ -83,6 +90,7 @@ class CreerSortieController extends AbstractController
         }
         $formAnnulerSortie = $this->createForm(AnnulerSortieType::class, $sortie);
         $formAnnulerSortie->handleRequest($request);
+
         if($formAnnulerSortie->isSubmitted() && $formAnnulerSortie->isValid()){
             $sortie->setEtat('annulé');
             $em->persist($sortie);

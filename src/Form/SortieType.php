@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -82,6 +83,12 @@ class SortieType extends AbstractType
             ])
             ->add('publier', SubmitType::class,[
                 'label'=>'Publier'
+            ])
+            ->add('cancel', ResetType::class,[
+                'label'=>'Annuler',
+               'attr' => [
+                    'class' => 'btn btn-danger'
+                 ]
             ])
         ;
     }

@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Sortie;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,7 +25,16 @@ class AnnulerSortieType extends AbstractType
 //            ->add('lieu')
 //            ->add('site')
 
-        ->add('Motif')
+        ->add('motif', TextareaType::class,[
+            'label'=>'Motif de l\'annulation',
+                'attr' => [
+                    'placeholder'=>'Une bonne raison ou j\'te bute'
+                ],
+            'mapped'=>false,
+            ])
+            ->add('annulerSortie', SubmitType::class,[
+                'label'=>'Annuler la sortie'
+            ])
         ;
     }
 

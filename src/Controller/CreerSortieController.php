@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Form\AnnulerSortieType;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,15 +24,23 @@ class CreerSortieController extends AbstractController
         $formSortie = $this->createForm(SortieType::class, $sortie);
 
         $formSortie->handleRequest($request);
+
         if($formSortie->isSubmitted() && $formSortie->isValid()){
+            $sortie=$formSortie->getData();
+
             if($formSortie->get('enregistrer')->isClicked()){
-                $sortie->setEtat('en création');
+                $sortie->setEtat("en création");
             }elseif($formSortie->get('publier')->isClicked()){
-                $sortie->setEtat('ouvert');
+                $sortie->setEtat("ouvert");
+                dump($sortie);
+            }else{
+                return $this->redirectToRoute('home');
             }
+
             $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
             $em->flush();
+           // dd($sortie);
             return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
         }
 
@@ -56,6 +65,18 @@ class CreerSortieController extends AbstractController
         $formSortie = $this->createForm(SortieType::class, $sortie);
         $formSortie->handleRequest($request);
         if($formSortie->isSubmitted() && $formSortie->isValid()){
+
+            $sortie=$formSortie->getData();
+
+            if($formSortie->get('enregistrer')->isClicked()){
+                $sortie->setEtat("en création");
+            }elseif($formSortie->get('publier')->isClicked()){
+                $sortie->setEtat("ouvert");
+                dump($sortie);
+            }else{
+                return $this->redirectToRoute('home');
+            }
+
             $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
             $em->flush();
@@ -80,18 +101,41 @@ class CreerSortieController extends AbstractController
         if ($sortie->getOrganisateur() != $this->getUser()) {
             throw $this->createAccessDeniedException("Vous ne pouvez pas annuler cette sortie");
         }
-        $formAnnulerSortie = $this->createForm(SortieType::class, $sortie);
+        $formAnnulerSortie = $this->createForm(AnnulerSortieType::class, $sortie);
         $formAnnulerSortie->handleRequest($request);
+
         if($formAnnulerSortie->isSubmitted() && $formAnnulerSortie->isValid()){
-            $sortie->setOrganisateur($this->getUser());
+            $sortie->setEtat('annulé');
             $em->persist($sortie);
             $em->flush();
             $this->addFlash('success', 'Sortie annulée');
             return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
         }
         return $this->render('creer_sortie/annuler_sortie.html.twig', [
-            'formAnnulerSortie' => $formAnnulerSortie->createView()
+            'formAnnulerSortie' => $formAnnulerSortie->createView(),
+            'sortie'=>$sortie
         ]);
     }
+
+    /**
+     * @Route("sortie/publier/{id}", name="publier_sortie")
+     */
+    public function publierSortie(int $id, Request $request, EntityManagerInterface $em)
+    {
+
+        $sortie = $em->getRepository(Sortie::class)->find($id);
+
+        $sortie->setEtat("ouvert");
+
+
+        $sortie->setOrganisateur($this->getUser());
+        $em->persist($sortie);
+        $em->flush();
+        $this->addFlash('success', 'Sortie publiée');
+
+        return $this->redirectToRoute('home',['id'=>$sortie->getId()
+        ]);
+    }
+
 
 }

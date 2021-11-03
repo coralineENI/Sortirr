@@ -122,17 +122,16 @@
 
         {% if app.user.userIdentifier != sortie.organisateur.username and etat=='en création' %}
         {% else %}
-        {% if archive.days >= 30 %}
-        {% else %}
-     {% if app.user.userIdentifier is null %}
-         {% else %}
-        {% for inscription in app.user.inscriptions %}
-            {% for inscriptions in sortie.inscriptions %}
-                {% if inscription == inscriptions %}
-                    {% set participantInscrit = true %}
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
+            {% if archive.days >= 30 %}
+            {% else %}
+
+                    {% for inscription in app.user.inscriptions %}
+                        {% for inscriptions in sortie.inscriptions %}
+                            {% if inscription == inscriptions %}
+                                {% set participantInscrit = true %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
 
         {% endif %}
         <tr class="text-center">
@@ -148,7 +147,7 @@
                         <p></p>
                     {% endif %}
                 </td>
-            <td scope="row"><a href="{{ path('detail_utilisateur', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></td>
+            <td scope="row"><a href="">{{ sortie.organisateur.username }}</a></td>
                 <td scope="row">
                    {% if  sortie.inscriptions|length== sortie.nbInscriptionsMax and etat == 'ouvert' %}
                        {%  if participantInscrit %}
@@ -164,17 +163,17 @@
                            </a>
                         {% endif %}
                    {% elseif sortie.organisateur.username==app.user.userIdentifier and etat == 'en création'%}
-                       <a href=""  class="btn btn-primary btn-sm bouton">
+                       <a href="{{ path('modifier_sortie', {'id':sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                            Modifier
                        </a><a>             </a>
-                       <a href=""  class="btn btn-primary btn-sm bouton">
+                       <a href="{{ path('publier_sortie', {'id':sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                            Publier
                        </a>
                    {% elseif sortie.inscriptions|length<sortie.nbInscriptionsMax and etat == 'ouvert' and sortie.organisateur.username==app.user.userIdentifier %}
                        <a href=""  class="btn btn-primary btn-sm bouton">
                            Afficher
                        </a><a>             </a>
-                       <a href=""  class="btn btn-primary btn-sm bouton">
+                       <a href="{{ path('annuler_sortie', {'id':sortie.id}) }}"  class="btn btn-primary btn-sm bouton">
                            Annuler
                        </a>
 
@@ -213,7 +212,9 @@
                 </td>
 
                <br>
+{#            {{ dump(sortie) }}#}
             {% endif %}
+
             {% endif %}
             {% else %}
                 <p>Aucune sortie trouvée</p>

@@ -8,7 +8,6 @@ use App\Entity\Inscription;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\FiltresType;
-use App\Form\FiltreType;
 use App\Repository\SortieRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,6 +40,7 @@ class AccueilController extends AbstractController
         }
         else {
             $sortiesListe = $sortieRepository->findAll();
+           // dump($sortiesListe);
         }
 
 

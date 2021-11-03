@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Form\AnnulerSortieType;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -80,17 +81,18 @@ class CreerSortieController extends AbstractController
         if ($sortie->getOrganisateur() != $this->getUser()) {
             throw $this->createAccessDeniedException("Vous ne pouvez pas annuler cette sortie");
         }
-        $formAnnulerSortie = $this->createForm(SortieType::class, $sortie);
+        $formAnnulerSortie = $this->createForm(AnnulerSortieType::class, $sortie);
         $formAnnulerSortie->handleRequest($request);
         if($formAnnulerSortie->isSubmitted() && $formAnnulerSortie->isValid()){
-            $sortie->setOrganisateur($this->getUser());
+            $sortie->setEtat('annulé');
             $em->persist($sortie);
             $em->flush();
             $this->addFlash('success', 'Sortie annulée');
             return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
         }
         return $this->render('creer_sortie/annuler_sortie.html.twig', [
-            'formAnnulerSortie' => $formAnnulerSortie->createView()
+            'formAnnulerSortie' => $formAnnulerSortie->createView(),
+            'sortie'=>$sortie
         ]);
     }
 

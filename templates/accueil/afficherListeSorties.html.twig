@@ -68,7 +68,7 @@
     <br>
     <hr>
     <div>
-        <center> <a href="http://localhost/sortirr/public/sortie/creer"  class="btn btn-primary btn-xl bouton">
+        <center> <a href="{{ path('creer_sortie') }}"  class="btn btn-primary btn-xl bouton">
                 Créer une sortie
             </a></center>
     </div>
@@ -138,7 +138,7 @@
                     <p></p>
                 {% endif %}
             </td>
-            <td scope="row"><a href={{ path('detail_utilisateur', {'id': sortie.organisateur.id}) }}>{{ sortie.organisateur.username }}</a></td>
+            <td scope="row"><a href="{{ path('detail_utilisateur', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.username }}</a></td>
             <td scope="row">
                 {% if  sortie.inscriptions|length== sortie.nbInscriptionsMax and etat == 'ouvert' %}
                     {%  if participantInscrit %}

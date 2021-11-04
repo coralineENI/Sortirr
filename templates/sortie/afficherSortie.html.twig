@@ -33,30 +33,63 @@
         {% set etat='en création' %}
     {% endif %}
 
-        <div class="d-flex justify-content-around">
-            <div>
-                <p>Nom de la sortie : {{ sortie.nom }} </p>
-                <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date}}  </p>
-                <p>Date limite d'inscription : {{ sortie.dateLimiteInscription | date }}</p>
-                <p>Nombre de places : {{ sortie.nbInscriptionsMax }}</p>
-                <p>Durée : {{ sortie.duree }}</p>
-                <p>Description : {{ sortie.infosSortie }}</p>
-                <p>Etat : {{ etat }}</p>
-                {% if etat=='annulé' %}
-                <p>Motif : {{ sortie.motif }}</p>
-                {% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Nom de la sortie : {{ sortie.nom }}</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Date et heure de la sortie : {{  sortie.dateHeureDebut | date('d-m-Y') }}</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Date limite d'inscription : {{  sortie.dateLimiteInscription | date('d-m-Y') }}</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Nombre de places :{{  sortie.nbInscriptionsMax}} </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Duree :{{  sortie.duree}} </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Description et infos : {{ sortie.infosSortie}} </th>
+                        </tr>
+                        <tr>
+                            {% if etat=='annulé' %}
+                            <th scope="row">Motif : {{ sortie.motif}} </th>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div>
-                <p>Lieu : {{ sortie.lieu }}</p>
-                <p>Rue : {{ sortie.lieu.rue }}</p>
-                <p>Ville : {{ sortie.lieu.ville.nom }}</p>
-                <p>Code Postal : {{ sortie.lieu.ville.codePostal}} </p>
-                <p>Latitude : {{ sortie.lieu.latitude }}</p>
-                <p>Longitude : {{ sortie.lieu.longitude }}</p>
-            </div>
+                <div class="col">
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <th scope="row">Lieu :{{ sortie.lieu.nom}} </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Rue : {{ sortie.lieu.rue}}</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Ville :  {{ sortie.lieu.ville.nom}}</th>
+                        </tr>
+                            <tr>
+                                <th scope="row">Code postal : {{ sortie.lieu.ville.codePostal}} </th>
+                            </tr>
+                        <tr>
+                            <th scope="row">Latitude: {{ sortie.lieu.latitude }}</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Longitude : {{ sortie.lieu.longitude }}</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
         </div>
-
-        <div class="d-flex justify-content-around">
+        <div class="d-flex justify-content-around ">
             <div class="form-group">
                 <label for="exampleFormControlSelect2"><h4>Liste des participants inscrits : </h4></label>
                 <div>
@@ -65,17 +98,29 @@
                         <tr>
                             <th scope="col" class="text-center">Nom</th>
                             <th scope="col" class="text-center">Prénom</th>
+                            {% for droit in app.user.roles  %}
+                                {% if droit == "ROLE_ADMIN" %}
+                            <th scope="col" class="text-center">Actions</th>
+                                {% endif %}
+                            {% endfor %}
+
                         </tr>
                         </thead>
                         <tbody>
-{% for inscrit in sortie.inscriptions %}
+                        {% for inscrit in sortie.inscriptions %}
 
                             <tr>
                                 <td> {{ inscrit.participant.nom }} </td>
                                 <td> {{ inscrit.participant.prenom }} </td>
-
+                                {% for droit in app.user.roles  %}
+                                    {% if droit == "ROLE_ADMIN" %}
+                                <td>
+                                    <a href="{{ path('retrait_participant_sortie', {'id' : inscrit.participant.id}) }}"> Suppression de la sortie</a>
+                                </td>
+                                    {% endif %}
+                                {% endfor %}
                             </tr>
-{% endfor %}
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>

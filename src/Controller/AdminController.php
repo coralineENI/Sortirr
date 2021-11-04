@@ -83,7 +83,7 @@ class AdminController extends AbstractController
             $em->remove($participant);
             $em->flush();
             $this->addFlash("success", "L'utilisateur a été supprimé");
-            return $this->redirectToRoute("utilisateurs");
+            return $this->redirectToRoute('utilisateurs');
 
     }
 
@@ -115,9 +115,26 @@ class AdminController extends AbstractController
 
             $em->persist($participant);
             $em->flush();
-            return $this->redirectToRoute("utilisateurs");
+            return $this->redirectToRoute('utilisateurs');
 
     }
 
-
+    /**
+     * @Route("/lieux", name="lieux")
+     */
+    public function gestionLieux(ParticipantRepository  $utiliss) :Response
+    {
+        return  $this->render('gestion_lieux/lieux.html.twig',[
+            'utiliss' => $utiliss->findAll()
+        ]);
+    }
+    /**
+     * @Route("/site", name="site")
+     */
+    public function gestionSite(ParticipantRepository  $utiliss) :Response
+    {
+        return  $this->render('gestion_site/site.html.twig',[
+            'utiliss' => $utiliss->findAll()
+        ]);
+    }
 }

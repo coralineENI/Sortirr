@@ -4,6 +4,14 @@
 
 {% block body %}
 
+    {% for message in app.flashes('success') %}
+        {% if message %}
+            <div class="alert-success">
+                <p class="text-center">{{ message }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+
     <br>
     {% if app.user %}
         <p>Date du jour : {{ now|date("d/m/Y") }}</p>

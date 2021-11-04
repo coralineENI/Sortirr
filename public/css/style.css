@@ -3,10 +3,13 @@
 }
 
 h3 {
-    font-family: 'Handlee', cursive;
     margin-top: 20px;
 }
 
 .table {
     margin-top: 50px;
+}
+
+body{
+    font-family: Poppins,sans-serif;
 }

@@ -31,11 +31,11 @@
 
                 <td>{{ user.nom }}</td>
                 <td>{{ user.prenom }}</td>
-{#               {% if user.image  %}#}
-{#                    <td><img src="{{ relative_path(vich_uploader_asset(user,'imageFile')) }}" alt="{{ user.nom }}" height="30"></td>#}
-{#                   {% else %}#}
-{#                   <td></td>#}
-{#                {% endif%}#}
+               {% if user.image  %}
+                    <td><img src="{{ relative_path(vich_uploader_asset(user,'imageFile')) }}" alt="{{ user.nom }}" height="30"></td>
+                   {% else %}
+                   <td></td>
+                {% endif%}
 
                 <td>
                     {% if user.actif==0 %}

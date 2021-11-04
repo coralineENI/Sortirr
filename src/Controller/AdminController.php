@@ -8,6 +8,7 @@ use App\Entity\Sortie;
 use App\Repository\InscriptionRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,8 +41,10 @@ class AdminController extends AbstractController
      */
     public function detailSortie(int $id,SortieRepository  $sortieRepository) :Response
     {
+        $now = new DateTime();
         $sortie=$this->getDoctrine()->getRepository(Sortie::class)->find($id);
         return  $this->render('sortie/afficherSortie.html.twig',[
+            'now'=> $now,
             'sortie' => $sortie
         ]);
     }

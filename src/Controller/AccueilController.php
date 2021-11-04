@@ -27,23 +27,33 @@ class AccueilController extends AbstractController
 
         $recherche = new Filtres();
         $sortiesListe = null;
-        $form = $this->createForm(FiltresType::class,$recherche );
+        $form = $this->createForm(FiltresType::class );
         $form->handleRequest($request);
         $now = new DateTime();
 
         if ($form->isSubmitted() and $form->isValid()){
+            $participant = $em->getRepository(Participant::class)->find($this->getUser());
 
-        $participant = $em->getRepository(Participant::class)->find($this->getUser()->getId());
-
-        $this->sortiesListe = $sortieRepository->findAllFilter($recherche, $participant);
-
+                $rechercheSite = $form['site']->getData();
+                $rechercheNom = $form['nom']->getData();
+                $rechercheDateMin = $form['debut']->getData();
+                $rechercheDateMax = $form['fin']->getData();
+                $rechercheOrga = $form['organisateur']->getData();
+                $rechercheInscrit = $form['inscrit']->getData();
+                $rechercheNotInscrit = $form['pasInscrit']->getData();
+                $recherchePassee = $form['sortiePassee']->getData();
+                if ($rechercheNom == null) {
+                    $rechercheNom = '';
+                }
+                return $this->render('sortie/index.html.twig', [
+                    'form' => $form->createView(),
+                    'sorties' => $sortieRepository->findAllFilter($rechercheSite, $rechercheNom, $rechercheDateMin, $rechercheDateMax, $rechercheOrga, $rechercheInscrit, $rechercheNotInscrit, $recherchePassee, $participant)
+                ]);
         }
         else {
-            $sortiesListe = $sortieRepository->findAll();
-           // dump($sortiesListe);
+        $sortiesListe = $sortieRepository->findAll();
+
         }
-
-
         return $this->render('accueil/afficherListeSorties.html.twig', [
             'now'=> $now,
             'form' => $form->createView(),

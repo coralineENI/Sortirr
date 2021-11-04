@@ -106,6 +106,8 @@ class CreerSortieController extends AbstractController
 
         if($formAnnulerSortie->isSubmitted() && $formAnnulerSortie->isValid()){
             $sortie->setEtat('annulé');
+            $motif = $formAnnulerSortie['motif']->getData();
+            $sortie->setMotif($motif);
             $em->persist($sortie);
             $em->flush();
             $this->addFlash('success', 'Sortie annulée');

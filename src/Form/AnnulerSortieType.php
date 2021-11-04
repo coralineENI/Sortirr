@@ -30,7 +30,6 @@ class AnnulerSortieType extends AbstractType
                 'attr' => [
                     'placeholder'=>'Une bonne raison ou j\'te bute'
                 ],
-            'mapped'=>false,
             ])
             ->add('annulerSortie', SubmitType::class,[
                 'label'=>'Annuler la sortie'

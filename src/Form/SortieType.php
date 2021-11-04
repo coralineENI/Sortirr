@@ -32,6 +32,7 @@ class SortieType extends AbstractType
             ])
             ->add('dateHeureDebut', DateTimeType::class,[
                 'label' => 'Date et heure de début de la sortie',
+//                'format' => 'dd-MM-yyyy H:i',
                 'date_widget' => 'single_text',
 //                'placeholder'=>['day'=>'Jour','month'=>'Mois',
 //                    'year'=>'Année','hour'=>'Heure',
@@ -45,6 +46,7 @@ class SortieType extends AbstractType
             ])
             ->add('dateLimiteInscription', DateTimeType::class,[
                 'label' => 'Limite d\'inscription',
+//                'format' => 'dd-MM-yyyy H:i',
                 'date_widget' => 'single_text',
             ])
             ->add('nbInscriptionsMax', IntegerType::class,[

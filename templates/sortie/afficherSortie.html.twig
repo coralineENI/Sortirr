@@ -12,6 +12,27 @@
     <div class="text-center">
     <h1>Afficher une sortie </h1>
     </div>
+
+    {% set participantInscrit = false %}
+    {% set etat='ouvert' %}
+    {% if sortie.dateHeureDebut|date("Y/m/d H:i") == now|date("Y/m/d H:i") %}
+        {% set etat='en cours' %}
+    {% elseif sortie.dateHeureDebut|date("Y/m/d H:i") < now|date("Y/m/d H:i") and (sortie.dateHeureDebut |date_modify("+"~sortie.duree~" minutes") | date("Y/m/d H:i") > now|date("Y/m/d H:i")) %}
+        {% set etat='en cours' %}
+    {% elseif sortie.dateLimiteInscription|date("Y/m/d") == now|date("Y/m/d") %}
+        {% set etat='fermé' %}
+    {% elseif sortie.dateLimiteInscription|date("Y/m/d") < now|date("Y/m/d") %}
+        {% set etat='fermé' %}
+    {% elseif sortie.dateLimiteInscription|date("Y/m/d") > now|date("Y/m/d") %}
+        {% set etat='ouvert' %}
+    {% endif %}
+    {% if sortie.etat=="annulé" %}
+        {% set etat='annulé' %}
+    {% endif %}
+    {% if sortie.etat=="en création" %}
+        {% set etat='en création' %}
+    {% endif %}
+
         <div class="d-flex justify-content-around">
             <div>
                 <p>Nom de la sortie : {{ sortie.nom }} </p>
@@ -19,13 +40,17 @@
                 <p>Date limite d'inscription : {{ sortie.dateLimiteInscription | date }}</p>
                 <p>Nombre de places : {{ sortie.nbInscriptionsMax }}</p>
                 <p>Durée : {{ sortie.duree }}</p>
-                <p>description et infos : {{ sortie.infosSortie }}</p>
+                <p>Description : {{ sortie.infosSortie }}</p>
+                <p>Etat : {{ etat }}</p>
+                {% if etat=='annulé' %}
+                <p>Motif : {{ sortie.motif }}</p>
+                {% endif %}
             </div>
             <div>
                 <p>Lieu : {{ sortie.lieu }}</p>
                 <p>Rue : {{ sortie.lieu.rue }}</p>
                 <p>Ville : {{ sortie.lieu.ville.nom }}</p>
-                <p>Code Postale : {{ sortie.lieu.ville.codePostal}} </p>
+                <p>Code Postal : {{ sortie.lieu.ville.codePostal}} </p>
                 <p>Latitude : {{ sortie.lieu.latitude }}</p>
                 <p>Longitude : {{ sortie.lieu.longitude }}</p>
             </div>
@@ -41,7 +66,7 @@
                             <th scope="col" class="text-center">Nom</th>
                             <th scope="col" class="text-center">Prénom</th>
                         </tr>
-                        </head>
+                        </thead>
                         <tbody>
 {% for inscrit in sortie.inscriptions %}
 
@@ -55,14 +80,33 @@
                     </table>
                 </div>
                 <div>
-                    <a href="{{ path('ajout_participant_sortie', {'id' : 1}) }} " class="btn btn-outline-success ">Inscription</a>
 
-                    {% if sortie.organisateur == app.user() %}
-                    <a href="{{ path('ajout_participant_sortie', {'id' : 1}) }} " class="btn btn-success ">Modifier</a>
-                    <a href="{{ path('ajout_participant_sortie', {'id' : 1}) }} " class="btn btn-danger ">Annuler</a>
+                    {% for inscription in app.user.inscriptions %}
+                        {% for inscrit in sortie.inscriptions %}
+                            {% if inscription == inscrit %}
+                                {% set participantInscrit = true %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% if  sortie.inscriptions|length== sortie.nbInscriptionsMax and etat == 'ouvert' %}
+                    {%  if participantInscrit %}
+                        <a href="{{ path('retrait_participant_sortie', {'id' : sortie.id}) }} " class="btn btn-outline-success ">Se désister</a>
+                    {% endif %}
+                    {% elseif sortie.inscriptions|length<sortie.nbInscriptionsMax and etat == 'ouvert' and sortie.organisateur.username==app.user.userIdentifier %}
+
+                        <a href="{{ path('annuler_sortie', {'id' : sortie.id}) }} " class="btn btn-danger ">Annuler</a>
+                    {% elseif sortie.inscriptions|length<sortie.nbInscriptionsMax and etat == 'ouvert' %}
+                        {%  if participantInscrit %}
+                            <a href="{{ path('retrait_participant_sortie', {'id' : sortie.id}) }} " class="btn btn-outline-success ">Se désister</a>
+                        {% else %}
+                            <a href="{{ path('ajout_participant_sortie', {'id' : sortie.id}) }} " class="btn btn-outline-success ">S'inscrire</a>
+                        {% endif %}
+
                     {% endif %}
 
-                    <a href="{{ path('ajout_participant_sortie', {'id' : 1}) }} " class="btn btn-secondary ">Retour</a>
+
+                    <a href="{{ path('home')}} " class="btn btn-secondary ">Retour</a>
                 </div>
     </div>
 

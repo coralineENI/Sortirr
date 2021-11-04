@@ -48,12 +48,12 @@ class ProfilType extends AbstractType
 
             ])
 
-        ->add('imageFile',VichImageType::class,[
-            'required' => false,
-            'allow_delete' => true,
-            'delete_label' => 'Supprimer votre image actuelle',
-        ]);
-
+  //      ->add('imageFile',VichImageType::class,[
+  //          'required' => false,
+  //          'allow_delete' => true,
+  //          'delete_label' => 'Supprimer votre image actuelle',
+  //      ]);
+;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

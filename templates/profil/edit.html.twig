@@ -14,8 +14,8 @@
 
 {% if app.user.image %}
 <div class="d-flex container">
-    <div class="container col-4 "><img src="{{ relative_path(vich_uploader_asset(app.user,'imageFile')) }}" alt="{{ app.user.nom }}" height="200"></div>
-
+  {#   <div class="container col-4 "><img src="{{ relative_path(vich_uploader_asset(app.user,'imageFile')) }}" alt="{{ app.user.nom }}" height="200"></div>
+#}
     <div class="container">
 {% endif %}
     {{ form_start(formProfile) }}

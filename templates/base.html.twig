@@ -39,13 +39,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('home') }}">Sorties</a>
                 <li class="nav-item">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('creer_sortie') }}">Créer une sortie</a>
+                    </li>
                     <a class="nav-link" href="{{ path('edit_profile',{'id': app.user.id}) }}">Mon profil</a>
                 </li>
 
 
-                <li class="nav-item">
-                     <a class="nav-link" href="">Créer une sortie</a>
-                </li>
+
 
 
               {% elseif role=="ROLE_ADMIN" %}
@@ -53,19 +54,23 @@
                   <li class="nav-item">
                       <a class="nav-link" href="{{ path('home') }}">Sorties</a>
                   <li class="nav-item">
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ path('creer_sortie') }}">Créer une sortie</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ path('utilisateurs') }}">Participants</a>
+                  </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_register') }}">Inscription</a>
                 </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="{{ path('lieux') }}">Géstion lieu</a>
+                      <a class="nav-link" href="{{ path('lieux') }}">Gestion lieu</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="{{ path('site') }}">Géstion site</a>
+                      <a class="nav-link" href="{{ path('site') }}">Gestion site</a>
                   </li>
-                <li class="nav-item">
-                   <a class="nav-link" href="{{ path('utilisateurs') }}">Participants</a>
-                </li>
+
 
                   <li class="nav-item">
                       <a class="nav-link" href="{{ path('edit_profile',{'id': app.user.id}) }}">Mon profil</a>

@@ -10,6 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
@@ -26,45 +27,54 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     public function  findDefault(Participant $user) {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('f');
         $qb
             ->setParameter('user', $user)
-            ->andWhere('s.organisateur = :user');
+            ->andWhere('f.organisateur = :user');
         $query = $qb->getQuery();
         return $query->getResult();
     }
 
-    public function findAllFilter(Site $site, string $nom, DateTime $debut, DateTime $fin, bool $isOrganisateur, bool $inscrit, bool $pasInscrit, bool $sortiePassee, Participant $id) {
-        $qb = $this->createQueryBuilder('s');
-        $qb
-            ->setParameter('user', $id)
-            ->andWhere('s.organisateur = :user')
-            ->setParameter('site', $site)
-            ->andWhere("s.site = :site")
-            ->setParameter('nom', '%'.$nom.'%' )
-            ->andWhere( $qb->expr()->like('s.nom', ':nom'))
-            ->setParameter('dateHeureMin', $debut)
-            ->setParameter('dateHeureMax', $fin)
-            ->andWhere('s.dateHeureDebut > :dateHeureMin')
-            ->andWhere('s.dateHeureDebut < :dateHeureMax');
+    public function findAllFilter(Site $site, string $nom,  bool $isOrganisateur, bool $inscrit, bool $pasInscrit, bool $sortiePassee, Participant $participant) {
+        $qb = $this->createQueryBuilder('f');
 
-        if ($isOrganisateur === false) {
-            $qb->andWhere("s.organisateur != :user");
+
+        if ($site!=null ) {
+            $qb
+                ->setParameter('user', $participant)
+                ->andWhere('f.organisateur = :user')
+                ->setParameter('site', $site)
+                ->andWhere("f.site = :site");
+         }
+
+        if ($nom!=null) {
+            $qb ->setParameter('nom', '%' . $nom . '%')
+                ->andWhere($qb->expr()->like('f.nom', ':nom'));
+
         }
-        if ($inscrit === false) {
-            $qb->innerJoin('s.participants', 'p')
-                ->setParameter('userId', $id->getId())
+//            ->setParameter('dateHeureMin', $debut)
+//            ->setParameter('dateHeureMax', $fin)
+//            ->andWhere('f.dateHeureDebut > :dateHeureMin')
+//            ->andWhere('f.dateHeureDebut < :dateHeureMax');
+
+
+        if ($isOrganisateur === true) {
+            $qb->andWhere("f.organisateur != :user");
+        }
+        if ($inscrit === true) {
+            $qb->innerJoin('f.organisateur', 'p')
+                ->setParameter('userId', $participant->getId())
                 ->andWhere('p.id != :userId');
         }
-        if ($pasInscrit === false) {
-            $qb->innerJoin('s.participants', 'p')
-                ->setParameter('userId', $id->getId())
+        if ($pasInscrit === true) {
+            $qb->innerJoin('f.organisateur', 'p')
+                ->setParameter('userId', $participant->getId())
                 ->andWhere('p.id = :userId');
         }
-        if ($sortiePassee === false) {
+        if ($sortiePassee === true) {
             $now = new DateTime('now');
             $qb->setParameter('now', $now)
-                ->andWhere('s.dateHeureDebut > :now');
+                ->andWhere('f.dateHeureDebut > :now');
         }
         $query = $qb->getQuery();
         return $query->getResult();

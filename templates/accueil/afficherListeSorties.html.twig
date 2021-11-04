@@ -4,6 +4,14 @@
 
 {% block body %}
 
+    {% for message in app.flashes('success') %}
+        {% if message %}
+            <div class="alert-success">
+                <p class="text-center">{{ message }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+
     <br>
     {% if app.user %}
         <p>Date du jour : {{ now|date("d/m/Y") }}</p>
@@ -22,14 +30,19 @@
                     {{ form_row(form.site) }}
                 </p>
                 <p class="form-group col-lg-auto">
+
                     {{ form_row(form.nom) }}
                 </p>
-                <p class="form-group col-lg-auto">
-                    {{ form_row(form.debut) }}
-                </p>
-                <p class="form-group col-lg-auto">
-                    {{ form_row(form.fin) }}
-                </p>
+{#                <p class="form-group col-lg-auto">#}
+{#                    <label for="{{ field_name(form.debut) }}">Entre : </label>#}
+{#                    <input type="date" name="{{ field_name(form.debut) }}">#}
+{#                    {{ form_row(form.debut) }}#}
+{#                </p>#}
+{#                <p class="form-group col-lg-auto">#}
+{#                    <label for="{{ field_name(form.fin) }}">et : </label>#}
+{#                    <input type="date" name="{{ field_name(form.fin) }}">#}
+{#                    {{ form_row(form.fin) }}#}
+{#                </p>#}
             </div>
             <div class="form-col col-md-auto blocFiltre">
                 <p class="form-group col-md-auto">
@@ -114,7 +127,7 @@
 
         {% if app.user.userIdentifier != sortie.organisateur.username and etat=='en création' %}
         {% else %}
-        {% if archive.days >= 30 %}
+        {% if archive.days >= 30 and dateDebut <= dateDifference %}
         {% else %}
 
         {% for inscription in app.user.inscriptions %}

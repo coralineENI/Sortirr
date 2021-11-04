@@ -6,9 +6,9 @@
             <h1 class="text-center">{{ util.username  }}</h1>
 
             <div class="d-flex  container justify-content-around">
-{#                {% if util.image %}#}
-{#                    <div class="col-3"><img src="{{ relative_path(vich_uploader_asset(util,'imageFile')) }}" alt="{{ util.nom }}" height="200"></div>#}
-{#                {% endif %}#}
+                {% if util.image %}
+                    <div class="col-3"><img src="{{ relative_path(vich_uploader_asset(util,'imageFile')) }}" alt="{{ util.nom }}" height="200"></div>
+                {% endif %}
                 <div class="text-start">
 
                     {% for rol in app.user.roles %}
@@ -87,7 +87,7 @@
             </div>
 
             <div class="text-center">
-                  <a href="{{ path('utilisateurs') }}" class="btn btn-secondary">Retour</a>
+                  <a href="{{ path('home') }}" class="btn btn-secondary">Retour</a>
             </div>
         {% endif %}
         {% endfor %}

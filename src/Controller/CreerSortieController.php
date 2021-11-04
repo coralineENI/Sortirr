@@ -34,7 +34,6 @@ class CreerSortieController extends AbstractController
                 $sortie->setEtat("en création");
             }elseif($formSortie->get('publier')->isClicked()){
                 $sortie->setEtat("ouvert");
-                dump($sortie);
             }else{
                 return $this->redirectToRoute('home');
             }
@@ -42,7 +41,6 @@ class CreerSortieController extends AbstractController
             $sortie->setOrganisateur($this->getUser());
             $em->persist($sortie);
             $em->flush();
-           // dd($sortie);
             return $this->redirectToRoute('home',['id'=>$sortie->getId()]);
         }
 

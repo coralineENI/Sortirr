@@ -27,17 +27,17 @@ class AccueilController extends AbstractController
 
         $recherche = new Filtres();
         $sortiesListe = null;
-        $form = $this->createForm(FiltresType::class );
+        $form = $this->createForm(FiltresType::class);
         $form->handleRequest($request);
+        $participant = $this->getUser();
         $now = new DateTime();
 
-        if ($form->isSubmitted() and $form->isValid()){
-            $participant = $em->getRepository(Participant::class)->find($this->getUser());
+        if ($form->isSubmitted()){
 
                 $rechercheSite = $form['site']->getData();
                 $rechercheNom = $form['nom']->getData();
-                $rechercheDateMin = $form['debut']->getData();
-                $rechercheDateMax = $form['fin']->getData();
+//                $rechercheDateMin = $form['debut']->getData();
+//                $rechercheDateMax = $form['fin']->getData();
                 $rechercheOrga = $form['organisateur']->getData();
                 $rechercheInscrit = $form['inscrit']->getData();
                 $rechercheNotInscrit = $form['pasInscrit']->getData();
@@ -45,9 +45,10 @@ class AccueilController extends AbstractController
                 if ($rechercheNom == null) {
                     $rechercheNom = '';
                 }
-                return $this->render('sortie/index.html.twig', [
+                return $this->render('accueil/afficherListeSorties.html.twig', [
+                    'now'=> $now,
                     'form' => $form->createView(),
-                    'sorties' => $sortieRepository->findAllFilter($rechercheSite, $rechercheNom, $rechercheDateMin, $rechercheDateMax, $rechercheOrga, $rechercheInscrit, $rechercheNotInscrit, $recherchePassee, $participant)
+                    'sorties' => $sortieRepository->findAllFilter($rechercheSite, $rechercheNom, $rechercheOrga, $rechercheInscrit, $rechercheNotInscrit, $recherchePassee, $participant)
                 ]);
         }
         else {

@@ -58,7 +58,6 @@ class ProfilController extends AbstractController
 
 
             $this->addFlash('success', 'Le profil a  été modifié avec succes!');
-            return $this->redirectToRoute("home");
 
         }
 

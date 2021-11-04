@@ -8,14 +8,20 @@
 
 {% block body %}
 
-
+    {% for message in app.flashes('success') %}
+        {% if message %}
+            <div class="alert-success">
+                <p class="text-center">{{ message }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
 
 <h1 class="text-center">Modifier le profil</h1>
 
 {% if app.user.image %}
 <div class="d-flex container">
-  {#   <div class="container col-4 "><img src="{{ relative_path(vich_uploader_asset(app.user,'imageFile')) }}" alt="{{ app.user.nom }}" height="200"></div>
-#}
+     <div class="container col-4 "><img src="{{ relative_path(vich_uploader_asset(app.user,'imageFile')) }}" alt="{{ app.user.nom }}" height="200"></div>
+
     <div class="container">
 {% endif %}
     {{ form_start(formProfile) }}

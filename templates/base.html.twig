@@ -17,7 +17,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand  col-1" href="{{ path('home') }}" ><img src={{asset('logo.png')}} alt="" width="50"></a>
+        <a class="navbar-brand  col-1 ms-lg-5" href="{{ path('home') }}" ><img src={{asset('logo.png')}} alt="" width="50"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -37,7 +37,7 @@
                 {% if role=="ROLE_USER" %}
 
                 <li class="nav-item">
-                    <a class="nav-link" href="">Sorties</a>
+                    <a class="nav-link" href="{{ path('home') }}">Sorties</a>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('edit_profile',{'id': app.user.id}) }}">Mon profil</a>
                 </li>
@@ -53,6 +53,9 @@
 
               {% elseif role=="ROLE_ADMIN" %}
 
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ path('home') }}">Sorties</a>
+                  <li class="nav-item">
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_register') }}">Inscription</a>

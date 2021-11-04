@@ -41,9 +41,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('edit_profile',{'id': app.user.id}) }}">Mon profil</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('app_logout') }}">Deconnexion </a>
-                </li>
 
 
                 <li class="nav-item">
@@ -60,6 +57,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_register') }}">Inscription</a>
                 </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ path('lieux') }}">Géstion lieu</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ path('site') }}">Géstion site</a>
+                  </li>
                 <li class="nav-item">
                    <a class="nav-link" href="{{ path('utilisateurs') }}">Participants</a>
                 </li>

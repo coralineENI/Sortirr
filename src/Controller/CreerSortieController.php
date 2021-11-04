@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Sortie;
 use App\Form\AnnulerSortieType;
 use App\Form\SortieType;
+use App\Repository\SortieRepository;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -136,6 +138,19 @@ class CreerSortieController extends AbstractController
         $this->addFlash('success', 'Sortie publiée');
 
         return $this->redirectToRoute('home',['id'=>$sortie->getId()
+        ]);
+    }
+
+    /**
+     * @Route("sortie/{id}", name="detail_sortie")
+     */
+    public function detailSortie(int $id, SortieRepository $sortieRepository) :Response
+    {
+        $now = new DateTime();
+        $sortie=$this->getDoctrine()->getRepository(Sortie::class)->find($id);
+        return  $this->render('sortie/afficherSortie.html.twig',[
+            'now'=> $now,
+            'sortie' => $sortie
         ]);
     }
 

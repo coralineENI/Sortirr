@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 
 /**
- *@IsGranted("ROLE_USER",message="Votre compte a été temporeremnet désactivé. Veillez contacter l'administration")
+ *@IsGranted("ROLE_USER",message="Votre compte a été temporairement désactivé. Veillez contacter l'administration")
  */
 
 class AdminController extends AbstractController
@@ -35,19 +35,6 @@ class AdminController extends AbstractController
         ]);
     }
 
-
-    /**
-     * @Route("/sortie/{id}", name="detail_sortie")
-     */
-    public function detailSortie(int $id,SortieRepository  $sortieRepository) :Response
-    {
-        $now = new DateTime();
-        $sortie=$this->getDoctrine()->getRepository(Sortie::class)->find($id);
-        return  $this->render('sortie/afficherSortie.html.twig',[
-            'now'=> $now,
-            'sortie' => $sortie
-        ]);
-    }
 
 
     /**

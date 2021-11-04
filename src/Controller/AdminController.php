@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 
 /**
- *@IsGranted("ROLE_USER",message="Votre compte a été temporeremnet désactivé. Veillez contacter l'administration")
+ *@IsGranted("ROLE_USER",message="Votre compte a été temporairement désactivé. Veillez contacter l'administration")
  */
 
 class AdminController extends AbstractController
@@ -35,19 +35,6 @@ class AdminController extends AbstractController
         ]);
     }
 
-
-    /**
-     * @Route("/sortie/{id}", name="detail_sortie")
-     */
-    public function detailSortie(int $id,SortieRepository  $sortieRepository) :Response
-    {
-        $now = new DateTime();
-        $sortie=$this->getDoctrine()->getRepository(Sortie::class)->find($id);
-        return  $this->render('sortie/afficherSortie.html.twig',[
-            'now'=> $now,
-            'sortie' => $sortie
-        ]);
-    }
 
 
     /**
@@ -83,7 +70,7 @@ class AdminController extends AbstractController
             $em->remove($participant);
             $em->flush();
             $this->addFlash("success", "L'utilisateur a été supprimé");
-            return $this->redirectToRoute("utilisateurs");
+            return $this->redirectToRoute('utilisateurs');
 
     }
 
@@ -115,9 +102,26 @@ class AdminController extends AbstractController
 
             $em->persist($participant);
             $em->flush();
-            return $this->redirectToRoute("utilisateurs");
+            return $this->redirectToRoute('utilisateurs');
 
     }
 
-
+    /**
+     * @Route("/lieux", name="lieux")
+     */
+    public function gestionLieux(ParticipantRepository  $utiliss) :Response
+    {
+        return  $this->render('gestion_lieux/lieux.html.twig',[
+            'utiliss' => $utiliss->findAll()
+        ]);
+    }
+    /**
+     * @Route("/site", name="site")
+     */
+    public function gestionSite(ParticipantRepository  $utiliss) :Response
+    {
+        return  $this->render('gestion_site/site.html.twig',[
+            'utiliss' => $utiliss->findAll()
+        ]);
+    }
 }

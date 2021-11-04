@@ -3,10 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Inscription;
+use App\Entity\Lieu;
 use App\Entity\Participant;
+use App\Entity\Site;
 use App\Entity\Sortie;
+use App\Entity\Villes;
 use App\Repository\InscriptionRepository;
+use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
+use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -106,22 +111,28 @@ class AdminController extends AbstractController
 
     }
 
+
     /**
      * @Route("/lieux", name="lieux")
      */
-    public function gestionLieux(ParticipantRepository  $utiliss) :Response
+    public function gestionLieux(Request $request, EntityManagerInterface $em)
     {
+         $lieu = null;
+        $this->$lieu=$em->getRepository(Lieu::class)->findAll();
         return  $this->render('gestion_lieux/lieux.html.twig',[
-            'utiliss' => $utiliss->findAll()
+            'lieu' => $this-> $lieu
         ]);
     }
+
     /**
      * @Route("/site", name="site")
      */
-    public function gestionSite(ParticipantRepository  $utiliss) :Response
+    public function gestionSite(Request $request, EntityManagerInterface $em)
     {
+        $site=null;
+        $this->$site=$em->getRepository(Site::class)->findAll();
         return  $this->render('gestion_site/site.html.twig',[
-            'utiliss' => $utiliss->findAll()
+            'site' => $this-> $site
         ]);
     }
 }

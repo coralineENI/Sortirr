@@ -25,26 +25,11 @@
                     <th scope="col" class="text-center">Ville</th>
                     <th scope="col" class="text-center">Actions</th>
                 </tr>
-                </head>
+                </thead>
                 <tbody>
-                {%  for user in utiliss %}
+                {%  for sites in site %}
                     <tr>
-                        <th scope="row">SAINT-HERBLAIN</th>
-                        <td>
-                            <a href="#" class="card-link">Modifier</a>
-                            <a href="#" class="card-link">Supprimer</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">CHARTRES DE BRETAGNE</th>
-                        <td>
-                            <a href="#" class="card-link">Modifier</a>
-                            <a href="#" class="card-link">Supprimer</a>
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <th scope="row">LA ROCHE SUR YON</th>
+                        <th scope="row">{{ sites.nom }}</th>
                         <td>
                             <a href="#" class="card-link">Modifier</a>
                             <a href="#" class="card-link">Supprimer</a>

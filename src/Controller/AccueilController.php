@@ -27,28 +27,21 @@ class AccueilController extends AbstractController
 
         $recherche = new Filtres();
         $sortiesListe = null;
-        $form = $this->createForm(FiltresType::class);
+        $form = $this->createForm(FiltresType::class, $recherche);
         $form->handleRequest($request);
-        $participant = $this->getUser();
+
+        $participant = $this->getUser()->getId();
         $now = new DateTime();
 
         if ($form->isSubmitted()){
 
-                $rechercheSite = $form['site']->getData();
-                $rechercheNom = $form['nom']->getData();
-//                $rechercheDateMin = $form['debut']->getData();
-//                $rechercheDateMax = $form['fin']->getData();
-                $rechercheOrga = $form['organisateur']->getData();
-                $rechercheInscrit = $form['inscrit']->getData();
-                $rechercheNotInscrit = $form['pasInscrit']->getData();
-                $recherchePassee = $form['sortiePassee']->getData();
-                if ($rechercheNom == null) {
-                    $rechercheNom = '';
-                }
+            $sortiesListe= $sortieRepository->findAllFilter($recherche, $participant);
+
+
                 return $this->render('accueil/afficherListeSorties.html.twig', [
                     'now'=> $now,
                     'form' => $form->createView(),
-                    'sorties' => $sortieRepository->findAllFilter($rechercheSite, $rechercheNom, $rechercheOrga, $rechercheInscrit, $rechercheNotInscrit, $recherchePassee, $participant)
+                    'sorties' => $sortiesListe
                 ]);
         }
         else {

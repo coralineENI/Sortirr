@@ -8,6 +8,7 @@ use App\Entity\Site;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,59 +27,67 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function  findDefault(Participant $user) {
-        $qb = $this->createQueryBuilder('f');
-        $qb
-            ->setParameter('user', $user)
-            ->andWhere('f.organisateur = :user');
+    private function findFilter() : QueryBuilder
+    {
+        return $this->createQueryBuilder('s');
+    }
+
+    public function findAllFilter(Filtres $recherche, int $participant)
+    {
+        $qb = $this->findFilter();
+
+        if ($recherche->getNom()) {
+            $mots= explode(", ", $recherche->getNom());
+
+            $qb = $qb->andWhere("s.nom LIKE :mot")
+                ->setParameter('mot', "%".$mots[0]."%");
+            for ($i=1; $i <sizeof($mots);$i++){
+                $qb->orWhere("s.nom LIKE :mot".$i)
+                    ->setParameter('mot'.$i,"%".$mots[$i]."%");
+            }
+            dump($qb);
+        }
+
+        if ($recherche->getDebut()) {
+            $qb = $qb->andWhere("s.dateHeureDebut >= :debut")
+                ->setParameter('debut', $recherche->getDebut());
+        }
+        if ($recherche->getFin()) {
+            $qb= $qb->andWhere("s.dateHeureDebut <= :fin")
+                ->setParameter('fin', $recherche->getFin());
+        }
+
+        if ($recherche->getOrganisateur()) {
+            $qb= $qb->andWhere("s.organisateur = :organisateur")
+                ->setParameter('organisateur', $participant);
+        }
+
+        if ($recherche->getSite() ) {
+            $qb=$qb
+                ->andWhere("s.site = :site")
+                ->setParameter('site', $recherche->getSite());
+            dump($qb);
+        }
+
+        if ($recherche->getInscrit()) {
+            $qb= $qb->andWhere("f.inscrit = :inscrit")
+                ->setParameter('inscrit', $participant);
+        }
+        if ($recherche->getPasInscrit()) {
+            $qb=$qb ->andWhere("f.pasInscrit = :pasInscrit")
+                ->setParameter('pasInscrit', $participant);
+        }
+        if ($recherche->getSortiePassee()) {
+            $qb=$qb->andWhere('s.dateHeureDebut <= :sortiePassee')
+                ->setParameter('sortiePassee', date('d-m-Y'));
+
+        }
         $query = $qb->getQuery();
+
         return $query->getResult();
     }
 
-    public function findAllFilter(Site $site, string $nom,  bool $isOrganisateur, bool $inscrit, bool $pasInscrit, bool $sortiePassee, Participant $participant) {
-        $qb = $this->createQueryBuilder('f');
 
-
-        if ($site!=null ) {
-            $qb
-                ->setParameter('user', $participant)
-                ->andWhere('f.organisateur = :user')
-                ->setParameter('site', $site)
-                ->andWhere("f.site = :site");
-         }
-
-        if ($nom!=null) {
-            $qb ->setParameter('nom', '%' . $nom . '%')
-                ->andWhere($qb->expr()->like('f.nom', ':nom'));
-
-        }
-//            ->setParameter('dateHeureMin', $debut)
-//            ->setParameter('dateHeureMax', $fin)
-//            ->andWhere('f.dateHeureDebut > :dateHeureMin')
-//            ->andWhere('f.dateHeureDebut < :dateHeureMax');
-
-
-        if ($isOrganisateur === true) {
-            $qb->andWhere("f.organisateur != :user");
-        }
-        if ($inscrit === true) {
-            $qb->innerJoin('f.organisateur', 'p')
-                ->setParameter('userId', $participant->getId())
-                ->andWhere('p.id != :userId');
-        }
-        if ($pasInscrit === true) {
-            $qb->innerJoin('f.organisateur', 'p')
-                ->setParameter('userId', $participant->getId())
-                ->andWhere('p.id = :userId');
-        }
-        if ($sortiePassee === true) {
-            $now = new DateTime('now');
-            $qb->setParameter('now', $now)
-                ->andWhere('f.dateHeureDebut > :now');
-        }
-        $query = $qb->getQuery();
-        return $query->getResult();
-    }
 
 //    /**
 //     * @return Query

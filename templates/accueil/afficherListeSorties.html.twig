@@ -23,7 +23,7 @@
     <div class="jumbotron" id="cardfilter">
         {{ form_start(form) }}
         {{ form_errors(form) }}
-
+        <div class="container">
         <div class="row">
             <div class="form-col col-lg-8">
                 <p class="form-group col-lg-auto">
@@ -33,21 +33,22 @@
 
                     {{ form_row(form.nom) }}
                 </p>
-{#                <p class="form-group col-lg-auto">#}
+                <p class="form-group col-lg-auto">
 {#                    <label for="{{ field_name(form.debut) }}">Entre : </label>#}
 {#                    <input type="date" name="{{ field_name(form.debut) }}">#}
-{#                    {{ form_row(form.debut) }}#}
-{#                </p>#}
-{#                <p class="form-group col-lg-auto">#}
+                    {{ form_row(form.debut) }}
+                </p>
+                <p class="form-group col-lg-auto">
 {#                    <label for="{{ field_name(form.fin) }}">et : </label>#}
 {#                    <input type="date" name="{{ field_name(form.fin) }}">#}
-{#                    {{ form_row(form.fin) }}#}
-{#                </p>#}
+                    {{ form_row(form.fin) }}
+                </p>
             </div>
             <div class="form-col col-md-auto blocFiltre">
                 <p class="form-group col-md-auto">
                 </p>
-            </div>
+
+
             <div class="form-col col-md-auto blocFiltre">
                 <p class="form-group col-md-auto">
                 </p>
@@ -71,12 +72,13 @@
                 </p>
             </div>
         </div>
+        </div>
         <br>
         {#    {{ form_row(form.submit) }}#}
         <button class="btn btn-primary btn-xl bouton">Rechercher</button>
         {#    {{ form_widget(form._token) }}#}
         {{ form_end(form) }}
-
+        </div>
     </div>
     <br>
     <hr>
